@@ -87,7 +87,7 @@ class GoogleTranslateMod(loader.Module):
         """Use language code with this command to switch basic translation language."""
         lang = utils.get_args_raw(message)
         if lang not in available_languages.values:
-            await utils.answer(message, self.strings("nolang"))
+            await utils.answer(message, self.strings("no_lang"))
         else:
             self.set("deflang", lang)
             await utils.answer(message, self.strings("setted"))
@@ -130,14 +130,7 @@ class GoogleTranslateMod(loader.Module):
         else:
             await utils.answer(message, self.strings("changed"))
 
-    async def deflangcmd(self, message: Message):
-        """Use language code with this command to switch basic translation language."""
-        lang = utils.get_args_raw(message)
-        if lang not in available_languages.values():
-            await utils.answer(message, self.strings("nolang"))
-        else:
-            self.set("deflang", lang)
-            await utils.answer(message, self.strings("setted"))
+
 
     async def silentmodecmd(self, message):
         """Use this command to switch between silent/unsilent mode."""
@@ -170,7 +163,7 @@ class GoogleTranslateMod(loader.Module):
         """Sends a list of chats, in which autotranslate is turned on."""
         laco = self._db.get(translations.__name__, "lang", "en")
         autotranslate = self.get("tr_cha")
-        alist = self.strings("alheader") + "\n"
+        alist = self.strings("alheader") + "\n\n"
         avlad = deep_translator.GoogleTranslator().get_supported_languages(as_dict=True)
         for i in autotranslate.keys():
             st_la, fi_la = autotranslate[i].split(";")
