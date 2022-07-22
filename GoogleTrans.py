@@ -1,23 +1,3 @@
-# ---------------------------------------------------------------------------------
-#  ,_     _          
-#  |\_,-~/          
-#  / _  _ |    ,--.  🌐 This module was loaded through https://t.me/hikkamods_bot
-# (  @  @ )   / ,-'  🔓 Not licensed.
-#  \  _T_/-._( (     
-#  /         `. \    ⚠️ Owner of this bot doesn't take responsibility for any
-# |         _  \ |   errors caused by this module or this module being non-working
-#  \ \ ,  /      |   and doesn't take ownership of any copyrighted material.
-#   || |-_\__   /    
-#  ((_/`(____,-'     
-# ---------------------------------------------------------------------------------
-# Name: GoogleTrans
-# Description: Advanced Google Translate module!
-# Author: GD-alt
-# Commands:
-#  .autotranslate | .deflang   | .silentmode | .subsmode
-# .markmode   | .atlist        | .translate
-# ---------------------------------------------------------------------------------
-
 # meta developer: @minimaxno
 # meta pic: https://img.icons8.com/color/344/translate-text.png
 # requires: deep-translator
@@ -103,17 +83,8 @@ class GoogleTranslateMod(loader.Module):
         if not self.get("tr_cha", False):
             self.set("tr_cha", {})
 
-    async def setdeflangcmd(self, message: Message):
-        """Use language code with this command to switch basic translation language."""
-        lang = utils.get_args_raw(message)
-        if lang not in available_languages.values:
-            await utils.answer(message, self.strings("nolang"))
-        else:
-            self.set("deflang", lang)
-            await utils.answer(message, self.strings("setted"))
-
     async def autotranslatecmd(self, message: Message):
-        """Use language code with this command to add this chat to autotranslate list."""
+        """Use language code with this command to add this chat to autotranslate list. After autotranslate is turned on, use slash to escape messages from translation."""
         lang = utils.get_args_raw(message)
         if (str(utils.get_chat_id(message)) in self.get("tr_cha")) and not lang:
             tr_cha = self.get("tr_cha")
@@ -290,7 +261,8 @@ class GoogleTranslateMod(loader.Module):
             or not message.out
             or str(utils.get_chat_id(message)) not in self.get("tr_cha").keys()
             or message.raw_text.split(maxsplit=1)[0].lower() in self.allmodules.commands
-        ):
+            or (message.text[0] == '/') or (message.text == '')
+            ):
             return
 
         stla, fila = self.get("tr_cha")[str(utils.get_chat_id(message))].split(";")
