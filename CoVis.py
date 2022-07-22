@@ -1,32 +1,48 @@
 from .. import loader, utils
 import io
 import logging
+import asyncio
 import requests
 from textwrap import wrap
 from PIL import Image, ImageDraw, ImageFont
 
 logger = logging.getLogger(__name__)
-tnrb = requests.get("https://github.com/GD-alt/fonts/blob/main/Times%20New%20Roman%20Bold.ttf?raw=true").content
-fptb = requests.get("https://github.com/GD-alt/fonts/blob/main/FuturaPT-Bold.ttf?raw=true").content
-cpsb = requests.get("https://github.com/GD-alt/fonts/blob/main/SourceCodePro-SemiBold.ttf?raw=true").content
-
 
 # meta developer: @minimaxno
 # meta pic: https://img.icons8.com/fluency/344/color-palette.png
 
 
-def register(cb):
-    cb(CoVisMod())
-
-
-@loader.tds
 class CoVisMod(loader.Module):
     """Visualise colors by those formules."""
     strings = {"name": "CoVis", "noargs": "📪 <b>And where's args?</b>", "inargs": "😵 <b>Incorrect args format!</b>"}
     strings_ru = {"name": "CoVis", "noargs": "📪 <b>Где аргументы?</b>", "inargs": "😵 <b>Неверный формат аргумента!</b>"}
     strings_de = {"name": "CoVis", "noargs": "📪 <b>Wo ist Argumenten?</b>", "inargs": "😵 <b>Falsches Argumenten-Format!</b>"}
 
+    async def _dl_font(self, font_name, short_name, size):
+        font_name = font_name.replace(" ", "%20")
+        setattr(
+            self,
+            short_name,
+            ImageFont.truetype(
+                io.BytesIO(
+                    (
+                        await utils.run_sync(
+                            requests.get,
+                            f"https://github.com/GD-alt/fonts/blob/main/{font_name}.ttf?raw=true",
+                        )
+                    ).content
+                ),
+            size),
+        )
+        getattr(self, f"{short_name}_ready").set()
+
     async def client_ready(self, client, db):
+        self.tnrb_ready = asyncio.Event()
+        asyncio.ensure_future(self._dl_font('Times New Roman Bold', 'tnrb', 64))
+        self.fptb_ready = asyncio.Event()
+        asyncio.ensure_future(self._dl_font('FuturaPT-Bold', 'fptb', 80))
+        self.cpsb_ready = asyncio.Event()
+        asyncio.ensure_future(self._dl_font('SourceCodePro-SemiBold', 'cpsb', 45))
         self.client = client
 
     async def hpiccmd(self, message):
@@ -158,12 +174,11 @@ class CoVisMod(loader.Module):
         for line in text.split("\n"):
             txt.append("\n".join(wrap(line, 30)))
         text = "\n".join(txt)
-        font = io.BytesIO(fptb)
-        font = ImageFont.truetype(font, 80)
+        await self.fptb_ready.wait()
         image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
         draw = ImageDraw.Draw(image)
         draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
-        draw.text((256, 256), text=color, anchor="mm", font=font, fill="#FFFFFF", align="center", stroke_width=8,
+        draw.text((256, 256), text=color, anchor="mm", font=self.fptb, fill="#FFFFFF", align="center", stroke_width=8,
                   stroke_fill="#000000")
         output = io.BytesIO()
         output.name = color + ".webp"
@@ -200,11 +215,12 @@ class CoVisMod(loader.Module):
             txt.append("\n".join(wrap(line, 30)))
         text = "\n".join(txt)
         image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
-        font = io.BytesIO(tnrb)
+        await self.tnrb_ready.wait()
+        font = io.BytesIO(self.tnrb)
         font = ImageFont.truetype(font, 64)
         draw = ImageDraw.Draw(image)
         draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
-        draw.text((256, 256), text=color, anchor="mm", font=font, fill="#FFFFFF", align="center", stroke_width=8,
+        draw.text((256, 256), text=color, anchor="mm", font=self.tnrb, fill="#FFFFFF", align="center", stroke_width=8,
                   stroke_fill="#000000")
         output = io.BytesIO()
         output.name = color + ".webp"
@@ -250,9 +266,8 @@ class CoVisMod(loader.Module):
         image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
         draw = ImageDraw.Draw(image)
         draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
-        font = io.BytesIO(cpsb)
-        font = ImageFont.truetype(font, 45)
-        draw.text((256, 256), text=color, anchor="mm", font=font, fill="#FFFFFF", align="center", stroke_width=8,
+        await self.cpsb_ready.wait()
+        draw.text((256, 256), text=color, anchor="mm", font=self.cpsb, fill="#FFFFFF", align="center", stroke_width=8,
                   stroke_fill="#000000")
 
         output = io.BytesIO()
