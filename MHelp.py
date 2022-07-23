@@ -64,6 +64,11 @@ class MHelpMod(loader.Module):
             langs = langs.split(', ')
         else:
             langs = [langs]
+        avla = GT().check_supported_languages()
+        for i in langs:
+            if i not in avla:
+                await utils.answer(m, self.strings('lang?'))
+                return
         if len(langs) > 1:
             for lang in range(1, len(langs)):
                 tren = GT(langs[0], langs[lang])
