@@ -64,9 +64,9 @@ class MHelpMod(loader.Module):
             langs = langs.split(', ')
         else:
             langs = [langs]
-        avla = GT().check_supported_languages()
+        avla = GT().get_supported_languages(as_dict = True)
         for i in langs:
-            if i not in avla:
+            if i not in avla.values():
                 await utils.answer(m, self.strings('lang?'))
                 return
         if len(langs) > 1:
@@ -95,7 +95,13 @@ class MHelpMod(loader.Module):
             return
         else:
             open(f'{name}.py', 'w').write(rq.get(link).text)
-        await m.client.send_file(m.to_id, f'{name}.py', caption=ans, parse_mode='HTML')
+        if len(ans) > 1024:
+            ans = [ans[i:i+1024] for i in range(0, len(ans), 1024)]
+        else:
+            ans = [ans]
+        await m.client.send_file(m.to_id, f'{name}.py', caption=ans[0], parse_mode='HTML')
+        for i in range(1, len(ans)):
+            await m.respond(ans[i])
         os.remove(f'{name}.py')
         await m.delete()
     
