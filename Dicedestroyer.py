@@ -44,12 +44,14 @@ class DicedestroyerMod(loader.Module):
             await utils.answer(m, self.strings('off'))
     
     async def watcher(self, m: Message):
-        if not isinstance(message, Message):
+        if (
+            not isinstance(m, Message)
+            or not m.dice
+            or m.out
+            or str(utils.get_chat_id(m)) not in self.get("würf.sper")
+            ):
             return
-        if ((getattr(m, "out", False)) or (str(utils.get_chat_id(m))) not in self.get('würf.sper')):
+        try:
+            await m.delete()
+        except:
             return
-        if m.dice:
-            try:
-                await m.delete()
-            except:
-                return
