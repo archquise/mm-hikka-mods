@@ -34,19 +34,20 @@ class DicedestroyerMod(loader.Module):
                 else:
                     return await utils.answer(m, self.strings('rights?'))
             wsperr = self.get('würf.sper')
-            wsperr.append(utils.get_chat_id(m))
+            wsperr.append(str(utils.get_chat_id(m)))
             self.set('würf.sper', wsperr)
             await utils.answer(m, self.strings('on'))
         else:
             wsperr = self.get('würf.sper')
-            del wsperr[getnum(wsper, utils.get_chat_id(m))]
+            del wsperr[getnum(wsperr, str(utils.get_chat_id(m)))]
             self.set('würf.sper', wsperr)
             await utils.answer(m, self.strings('off'))
     
     async def watcher(self, m: Message):
-        if (m.out) or (str(utils.get_chat_id(m)) not in self.get('würf.sper')) or not (m.dice):
+        if ((m.out) or (str(utils.get_chat_id(m))) not in self.get('würf.sper')):
             return
-        try:
-            await m.delete()
-        except:
-            return
+        if m.dice:
+            try:
+                await m.delete()
+            except:
+                return
