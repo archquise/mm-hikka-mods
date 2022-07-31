@@ -1,27 +1,3 @@
-# ---------------------------------------------------------------------------------
-#  ,_     _          
-#  |\_,-~/          
-#  / _  _ |    ,--.  🌐 This module was loaded through https://t.me/hikkamods_bot
-# (  @  @ )   / ,-'  🔓 Not licensed.
-#  \  _T_/-._( (     
-#  /         `. \    ⚠️ Owner of this bot doesn't take responsibility for any
-# |         _  \ |   errors caused by this module or this module being non-working
-#  \ \ ,  /      |   and doesn't take ownership of any copyrighted material.
-#   || |-_\__   /    
-#  ((_/`(____,-'     
-# ---------------------------------------------------------------------------------
-# Name: GoogleTrans
-# Description: Advanced Google Translate module!
-# Author: GD-alt
-# Commands:
-#  .autotranslate | .deflang   | .silentmode | .subsmode
-# .markmode   | .atlist        | .translate
-# ---------------------------------------------------------------------------------
-
-# meta developer: @minimaxno
-# meta pic: https://img.icons8.com/color/344/translate-text.png
-# requires: deep-translator
-
 
 import logging
 import deep_translator
