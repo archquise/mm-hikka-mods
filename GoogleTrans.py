@@ -1,3 +1,23 @@
+# ---------------------------------------------------------------------------------
+#  ,_     _          
+#  |\_,-~/          
+#  / _  _ |    ,--.  🌐 This module was loaded through https://t.me/hikkamods_bot
+# (  @  @ )   / ,-'  🔓 Not licensed.
+#  \  _T_/-._( (     
+#  /         `. \    ⚠️ Owner of this bot doesn't take responsibility for any
+# |         _  \ |   errors caused by this module or this module being non-working
+#  \ \ ,  /      |   and doesn't take ownership of any copyrighted material.
+#   || |-_\__   /    
+#  ((_/`(____,-'     
+# ---------------------------------------------------------------------------------
+# Name: GoogleTrans
+# Description: Advanced Google Translate module!
+# Author: GD-alt
+# Commands:
+#  .autotranslate | .deflang   | .silentmode | .subsmode
+# .markmode   | .atlist        | .translate
+# ---------------------------------------------------------------------------------
+
 # meta developer: @minimaxno
 # meta pic: https://img.icons8.com/color/344/translate-text.png
 # requires: deep-translator
@@ -83,8 +103,17 @@ class GoogleTranslateMod(loader.Module):
         if not self.get("tr_cha", False):
             self.set("tr_cha", {})
 
+    async def setdeflangcmd(self, message: Message):
+        """Use language code with this command to switch basic translation language."""
+        lang = utils.get_args_raw(message)
+        if lang not in available_languages.values:
+            await utils.answer(message, self.strings("nolang"))
+        else:
+            self.set("deflang", lang)
+            await utils.answer(message, self.strings("setted"))
+
     async def autotranslatecmd(self, message: Message):
-        """Use language code with this command to add this chat to autotranslate list. After autotranslate is turned on, use slash to escape messages from translation."""
+        """Use language code with this command to add this chat to autotranslate list."""
         lang = utils.get_args_raw(message)
         if (str(utils.get_chat_id(message)) in self.get("tr_cha")) and not lang:
             tr_cha = self.get("tr_cha")
@@ -145,7 +174,7 @@ class GoogleTranslateMod(loader.Module):
             self.set("s-script", False)
             await utils.answer(message, self.strings("unsubscribe"))
         else:
-            self.set("s-scrilt", True)
+            self.set("s-script", True)
             await utils.answer(message, self.strings("subscribe"))
 
     async def markmodecmd(self, message):
