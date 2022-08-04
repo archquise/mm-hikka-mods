@@ -154,7 +154,7 @@ class GoogleTranslateMod(loader.Module):
             self.set("s-script", False)
             await utils.answer(message, self.strings("unsubscribe"))
         else:
-            self.set("s-scrilt", True)
+            self.set("s-script", True)
             await utils.answer(message, self.strings("subscribe"))
 
     async def markmodecmd(self, message):
