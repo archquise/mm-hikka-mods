@@ -1,3 +1,7 @@
+# meta developer: @minimaxno
+# meta pic: https://img.icons8.com/color/344/input-latin-uppercase-emoji.png
+# requires: deep-translator
+
 
 import logging
 import deep_translator
@@ -150,7 +154,7 @@ class GoogleTranslateMod(loader.Module):
             self.set("s-script", False)
             await utils.answer(message, self.strings("unsubscribe"))
         else:
-            self.set("s-script", True)
+            self.set("s-scrilt", True)
             await utils.answer(message, self.strings("subscribe"))
 
     async def markmodecmd(self, message):
