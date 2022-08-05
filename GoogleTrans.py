@@ -1,5 +1,5 @@
 # meta developer: @minimaxno
-# meta pic: https://img.icons8.com/color/344/input-latin-uppercase-emoji.png
+# meta pic: https://img.icons8.com/color/344/input-latin-letters-emoji.png
 # requires: deep-translator
 
 
@@ -24,6 +24,9 @@ class GoogleTranslateMod(loader.Module):
     strings = {
         "name": "Google Translate",
         "load": "🔄 <b>Translating…</b>",
+        "load2": "🔎 <b>Searching… Please, wait.</b>",
+        "se-re": "📘 <b>Search result:</b>\n",
+        "cll": "🔄 <b>Configuring language list…</b>",
         "args": "🚫 <b>No arguments, no reply…</b>",
         "args2": "🚫 <b>No arguments…</b>",
         "no_lang": "📕 <b>No such language!</b>",
@@ -41,11 +44,16 @@ class GoogleTranslateMod(loader.Module):
         "unsubscribe": (
             "🖋️ <b>Now I won't keep original text while autotranslating.</b>"
         ),
+        'onboard-h': 'ℹ️ <b>Some useful info about syntax</b>\n\n•  .deflang {two-digit lang code} sets your language to defined.\n• .markmode, .subsmode, .silentmode, .atlist takes no arguments.\n• .autotranslate {start;finish} takes argument only in such format. You may skip start language to define it automatically. Also you may skip finish language to define it from your default language.\n• .translate ({start;finish}) [text/reply] have same rules while defining languages, as previous command. You may skip block in brackets to translate text from autodefined language to your default language.\n• .searchlang {two-digit language code/russion or english language name} returns following language.\n\n In manual [s-t] being used for unnecessary text block. {s-t} — for necessary.',
+        'tt': 'tt'
     }
 
     strings_ru = {
         "name": "Google Translate",
         "load": "🔄 <b>Перевожу…</b>",
+        "load2": "🔎 <b>Ищу… Ожидайте.</b>",
+        "se-re": "📘 <b>Найдено:</b>\n",
+        "cll": "🔄 <b>Конфигурирую список языков…</b>",
         "args": "🚫 <b>Ни аргумента, ни ответа…</b>",
         "args2": "🚫 <b>Нет аргумента…</b>",
         "no_lang": "📕 <b>Я не знаю такого языка!</b>",
@@ -63,6 +71,8 @@ class GoogleTranslateMod(loader.Module):
         "unsubscribe": (
             "🖋️ <b>Теперь я не сохраняю оригинальный текст при автопереводе.</b>"
         ),
+        'onboard-h': 'ℹ️ <b>Руководство по синтаксису</b>\n\n•  .deflang {двузначный языковой код} установит ваш язык по умолчанию на введённый.\n• .markmode, .subsmode, .silentmode, .atlist не принимают аргументов.\n• .autotranslate {старт;финал} принимает аргументы только в таком формате. При пропуске начального языка, он будет определяться автоматически каждый раз. Финальный язык при пропуске его будет взят из языка по умолчанию.\n• .translate [({старт;финал})] {текст/ответ} имеет те же правила по обозначению языков, что и прошлая команда. Можно пропустить блок в круглых скобках чтобы перевести с автопереведённого языка на язык по умолчанию.\n• .searchlang {двузначный языковой код/название языка на русском или английском} выдаёт язык, соотвтетствующий названию или коду.\n\nВ руководстве [что-то] обозначает необязательный текстовый блок. {что-то} — обязательный.',
+        'tt': 'тф'
     }
 
     async def client_ready(self, client, db):
@@ -130,6 +140,10 @@ class GoogleTranslateMod(loader.Module):
         else:
             await utils.answer(message, self.strings("changed"))
 
+    async def onboardhcmd(self, m: Message):
+        """Syntax manual."""
+        await utils.answer(m, self.strings('onboard-h'))
+
     async def deflangcmd(self, message: Message):
         """Use language code with this command to switch basic translation language."""
         lang = utils.get_args_raw(message)
@@ -138,6 +152,37 @@ class GoogleTranslateMod(loader.Module):
         else:
             self.set("deflang", lang)
             await utils.answer(message, self.strings("setted"))
+
+    async def searchlangcmd(self, m: Message):
+        """Searching language by code or name (RU and EN names avaliable; first usage takes some time to configure database)."""
+        query = utils.get_args_raw(m)
+        if query == '':
+            return await utils.answer(m, self.strings('args2'))
+        if not self.get('rulangdb', False):
+            await utils.answer(m, self.strings('cll'))
+            rld = {}
+            for z in available_languages:
+                ru_n = z + ' language'
+                ru_n = deep_translator.GoogleTranslator('en', 'ru').translate(ru_n).replace('язык', '').replace(' ', '')
+                rld.update({ru_n: available_languages[z]})
+            self.set('rulangdb', rld)
+        rld = self.get('rulangdb')
+        try:
+            res = available_languages[query]
+        except:
+            try:
+                res = rld[query]
+            except:
+                if self.strings('tt') == 'тф':
+                    res = get_key(rld, query)
+                    if res is None:
+                        return await utils.answer(m, self.strings('no_lang'))
+                else:
+                    res = getkey(available_languages, query)
+                    if res is None:
+                        return await utils.answer(m, self.strings('no_lang'))
+        return await utils.answer(m, f'{self.strings("se-re")}<code>{query}</code> -> <code>{res}</code>')
+                
 
     async def silentmodecmd(self, message):
         """Use this command to switch between silent/unsilent mode."""
@@ -270,8 +315,9 @@ class GoogleTranslateMod(loader.Module):
             or not message.out
             or str(utils.get_chat_id(message)) not in self.get("tr_cha").keys()
             or message.raw_text.split(maxsplit=1)[0].lower() in self.allmodules.commands
-            or (message.text[0] == '/') or (message.text == '')
-            ):
+            or (message.text[0] == "/")
+            or (message.text == "")
+        ):
             return
 
         stla, fila = self.get("tr_cha")[str(utils.get_chat_id(message))].split(";")
@@ -292,4 +338,4 @@ class GoogleTranslateMod(loader.Module):
         try:
             await utils.answer(message, translated)
         except:
-        	return
+            return
