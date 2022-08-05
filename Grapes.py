@@ -26,7 +26,7 @@ class GrapesMod(loader.Module):
             await utils.answer(message, f'{self.strings("gef")}\n{self.strings("q")} {args}')
             sleep(1.5)
             await message.delete()
-            await reslt[reslt.index(choice(reslt))].click(message.to_id)
+            await reslt[reslt.index(choice(reslt))].click(utils.get_chat_id(m))
         except:
             await message.respond(self.strings('n-gef'))
             return
@@ -43,7 +43,7 @@ class GrapesMod(loader.Module):
             await utils.answer(message, f'{self.strings("gef")}\n{self.strings("q")} {args}')
             sleep(1.5)
             await message.delete()
-            await reslt[reslt.index(choice(reslt))].click(message.to_id)
+            await reslt[reslt.index(choice(reslt))].click(utils.get_chat_id(m))
         except:
             await message.respond(self.strings('n-gef'))
             return
