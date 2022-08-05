@@ -1,8 +1,11 @@
 # meta developer: @minimaxno
 # meta pic: https://img.icons8.com/color/344/input-latin-letters-emoji.png
 # requires: deep-translator
+# scope: hikka_only
+# scope: hikka_min 1.3.0
 
 
+import contextlib
 import logging
 import deep_translator
 from telethon.tl.types import Message
@@ -15,8 +18,10 @@ logger = logging.getLogger(__name__)
 
 def get_key(dictionary: dict, needle: str) -> str:
     return next((key for key, value in dictionary.items() if value == needle), None)
+
+
 def get_num(list: list, needle: str) -> int:
-    for i in range(0, len(list)):
+    for i in range(len(list)):
         if list[i] == needle:
             return i
 
@@ -48,10 +53,26 @@ class GoogleTranslateMod(loader.Module):
         "unsubscribe": (
             "🖋️ <b>Now I won't keep original text while autotranslating.</b>"
         ),
-        'onboard-h': 'ℹ️ <b>Some useful info about syntax</b>\n\n•  .deflang {two-digit lang code} sets your language to defined.\n• .markmode, .subsmode, .silentmode, .atlist takes no arguments.\n• .autotranslate {start;finish} takes argument only in such format. You may skip start language to define it automatically. Also you may skip finish language to define it from your default language.\n• .translate ({start;finish}) [text/reply] have same rules while defining languages, as previous command. You may skip block in brackets to translate text from autodefined language to your default language.\n• .searchlang {two-digit language code/russion or english language name} returns following language.\n\n In manual [s-t] being used for unnecessary text block. {s-t} — for necessary.',
-        'tt': 'tt',
-        'lapi': '📥 <b>Language names packet for <code>{}</code> succesfully installed!</b>',
-        'lapd': '📤 <b>Language names packet for <code>{}</code> succesfully deleted!</b>'
+        "onboard-h": (
+            "ℹ️ <b>Some useful info about syntax</b>\n\n•  .deflang {two-digit lang"
+            " code} sets your language to defined.\n• .markmode, .subsmode,"
+            " .silentmode, .atlist takes no arguments.\n• .autotranslate {start;finish}"
+            " takes argument only in such format. You may skip start language to define"
+            " it automatically. Also you may skip finish language to define it from"
+            " your default language.\n• .translate ({start;finish}) [text/reply] have"
+            " same rules while defining languages, as previous command. You may skip"
+            " block in brackets to translate text from autodefined language to your"
+            " default language.\n• .searchlang {two-digit language code/russion or"
+            " english language name} returns following language.\n\n In manual [s-t]"
+            " being used for unnecessary text block. {s-t} — for necessary."
+        ),
+        "tt": "tt",
+        "lapi": (
+            "📥 <b>Language names packet for <code>{}</code> succesfully installed!</b>"
+        ),
+        "lapd": (
+            "📤 <b>Language names packet for <code>{}</code> succesfully deleted!</b>"
+        ),
     }
 
     strings_ru = {
@@ -77,10 +98,24 @@ class GoogleTranslateMod(loader.Module):
         "unsubscribe": (
             "🖋️ <b>Теперь я не сохраняю оригинальный текст при автопереводе.</b>"
         ),
-        'onboard-h': 'ℹ️ <b>Руководство по синтаксису</b>\n\n•  .deflang {двузначный языковой код} установит ваш язык по умолчанию на введённый.\n• .markmode, .subsmode, .silentmode, .atlist не принимают аргументов.\n• .autotranslate {старт;финал} принимает аргументы только в таком формате. При пропуске начального языка, он будет определяться автоматически каждый раз. Финальный язык при пропуске его будет взят из языка по умолчанию.\n• .translate [({старт;финал})] {текст/ответ} имеет те же правила по обозначению языков, что и прошлая команда. Можно пропустить блок в круглых скобках чтобы перевести с автопереведённого языка на язык по умолчанию.\n• .searchlang {двузначный языковой код/название языка на русском или английском} выдаёт язык, соотвтетствующий названию или коду.\n\nВ руководстве [что-то] обозначает необязательный текстовый блок. {что-то} — обязательный.',
-        'tt': 'тф',
-        'lapi': "📥 <b>Языковой пакет для языка <code>{}</code> успешно установлен!</b>",
-        'lapd': '📤 <b>Языковой пакет для языка <code>{}</code> успешно удалён!</b>'
+        "onboard-h": (
+            "ℹ️ <b>Руководство по синтаксису</b>\n\n•  .deflang {двузначный языковой"
+            " код} установит ваш язык по умолчанию на введённый.\n• .markmode,"
+            " .subsmode, .silentmode, .atlist не принимают аргументов.\n•"
+            " .autotranslate {старт;финал} принимает аргументы только в таком формате."
+            " При пропуске начального языка, он будет определяться автоматически каждый"
+            " раз. Финальный язык при пропуске его будет взят из языка по умолчанию.\n•"
+            " .translate [({старт;финал})] {текст/ответ} имеет те же правила по"
+            " обозначению языков, что и прошлая команда. Можно пропустить блок в"
+            " круглых скобках чтобы перевести с автопереведённого языка на язык по"
+            " умолчанию.\n• .searchlang {двузначный языковой код/название языка на"
+            " русском или английском} выдаёт язык, соотвтетствующий названию или"
+            " коду.\n\nВ руководстве [что-то] обозначает необязательный текстовый блок."
+            " {что-то} — обязательный."
+        ),
+        "tt": "тф",
+        "lapi": "📥 <b>Языковой пакет для языка <code>{}</code> успешно установлен!</b>",
+        "lapd": "📤 <b>Языковой пакет для языка <code>{}</code> успешно удалён!</b>",
     }
 
     async def client_ready(self, client, db):
@@ -100,7 +135,7 @@ class GoogleTranslateMod(loader.Module):
 
         if not self.get("tr_cha", False):
             self.set("tr_cha", {})
-            
+
         if not self.get("addla", False):
             self.set("addla", [])
 
@@ -153,47 +188,69 @@ class GoogleTranslateMod(loader.Module):
 
     async def onboardhcmd(self, m: Message):
         """Syntax manual."""
-        await utils.answer(m, self.strings('onboard-h'))
+        await utils.answer(m, self.strings("onboard-h"))
 
     async def dllapcmd(self, m: Message):
         """Downloads languages name pack for entered language. Allows to search languages through .searchlang on your own language."""
         lang = utils.get_args_raw(m)
-        if lang == '':
-            return await utils.answer(m, self.strings('args2'))
+        if lang == "":
+            return await utils.answer(m, self.strings("args2"))
         if lang not in available_languages.values():
             await utils.answer(m, self.strings("nolang"))
-        if not self.get(f'{lang}langdb', False):
-            await utils.answer(m, self.strings('cll'))
+        if not self.get(f"{lang}langdb", False):
+            await utils.answer(m, self.strings("cll"))
             rld = {}
-            langword = deep_translator.GoogleTranslator('en', lang).translate('a language').casefold()
-            if ' ' in langword:
-                langword = deep_translator.GoogleTranslator('en', lang).translate('language').casefold()
+            langword = (
+                deep_translator.GoogleTranslator("en", lang)
+                .translate("a language")
+                .casefold()
+            )
+
+            if " " in langword:
+                langword = (
+                    deep_translator.GoogleTranslator("en", lang)
+                    .translate("language")
+                    .casefold()
+                )
+
             for z in available_languages:
-                ru_n = z + ' language'
-                ru_n = deep_translator.GoogleTranslator('en', lang).translate(ru_n).casefold().replace(langword, '')
-                if ru_n[-1] == ' ':
+                ru_n = f"{z} language"
+                ru_n = (
+                    deep_translator.GoogleTranslator("en", lang)
+                    .translate(ru_n)
+                    .casefold()
+                    .replace(langword, "")
+                )
+
+                if ru_n[-1] == " ":
                     ru_n = ru_n[:-1]
-                if ru_n[0] == ' ':
-                    ru_n = ru_n.replace(' ', '', 1)
-                rld.update({ru_n: available_languages[z]})
-            self.set(f'{lang}langdb', rld)
+                    
+                if ru_n[-1] == " ":
+                    ru_n = ru_n[:-1]
+                    
+                if ru_n[0] == " ":
+                    ru_n = ru_n.replace(" ", "", 1)
+                if ru_n[0] == "-":
+                    ru_n = ru_n.replace("-", "", 1)
+                rld[ru_n.casefold()] = available_languages[z]
+            self.set(f"{lang}langdb", rld)
             addla = self.get("addla")
             addla.append(lang)
             addla = self.set("addla", addla)
-        return await utils.answer(m, self.strings('lapi').format(lang))
+        return await utils.answer(m, self.strings("lapi").format(lang))
 
     async def dellapcmd(self, m: Message):
         """Deletes custom language pack."""
         lang = utils.get_args_raw(m)
-        if lang == '':
-            return await utils.answer(m, self.strings('args2'))
-        if lang not in self.get('addla'):
+        if lang == "":
+            return await utils.answer(m, self.strings("args2"))
+        if lang not in self.get("addla"):
             await utils.answer(m, self.strings("nolang"))
-        del self._db[self.__class__.__name__][f'{lang}langdb']
+        del self._db[self.__class__.__name__][f"{lang}langdb"]
         addla = self.get("addla")
         del addla[get_num(addla, lang)]
         addla = self.set("addla", addla)
-        return await utils.answer(m, self.strings('lapd').format(lang))
+        return await utils.answer(m, self.strings("lapd").format(lang))
 
     async def deflangcmd(self, message: Message):
         """Use language code with this command to switch basic translation language."""
@@ -207,39 +264,49 @@ class GoogleTranslateMod(loader.Module):
     async def searchlangcmd(self, m: Message):
         """Searching language by code or name (RU and EN names avaliable; first usage takes some time to configure database)."""
         query = utils.get_args_raw(m)
-        if query == '':
-            return await utils.answer(m, self.strings('args2'))
-        if not self.get('rulangdb', False):
-            await utils.answer(m, self.strings('cll'))
+        if query == "":
+            return await utils.answer(m, self.strings("args2"))
+        if not self.get("rulangdb", False):
+            await utils.answer(m, self.strings("cll"))
             rld = {}
             for z in available_languages:
-                ru_n = z + ' language'
-                ru_n = deep_translator.GoogleTranslator('en', 'ru').translate(ru_n).replace('язык', '').replace(' ', '')
-                rld.update({ru_n: available_languages[z]})
-            self.set('rulangdb', rld)
-        rld = self.get('rulangdb')
-        for x in range(len(self.get('addla'))):
+                ru_n = f"{z} language"
+                ru_n = (
+                    deep_translator.GoogleTranslator("en", "ru")
+                    .translate(ru_n)
+                    .replace("язык", "")
+                    .replace(" ", "")
+                )
+
+                rld[ru_n] = available_languages[z]
+            self.set("rulangdb", rld)
+        rld = self.get("rulangdb")
+        for x in range(len(self.get("addla"))):
             try:
                 res = self.get(f'{self.get("addla")[x]}langdb')[query]
-                return await utils.answer(m, f'{self.strings("se-re")}<code>{query}</code> -> <code>{res}</code>')
-            except:
+                return await utils.answer(
+                    m,
+                    f'{self.strings("se-re")}<code>{query}</code> ->'
+                    f" <code>{res}</code>",
+                )
+
+            except Exception:
                 continue
         try:
             res = available_languages[query]
-        except:
+        except Exception:
             try:
                 res = rld[query]
-            except:
-                if self.strings('tt') == 'тф':
+            except Exception:
+                if self.strings("tt") == "тф":
                     res = get_key(rld, query)
-                    if res is None:
-                        return await utils.answer(m, self.strings('no_lang'))
                 else:
-                    res = getkey(available_languages, query)
-                    if res is None:
-                        return await utils.answer(m, self.strings('no_lang'))
-        return await utils.answer(m, f'{self.strings("se-re")}<code>{query}</code> -> <code>{res}</code>')
-                
+                    res = get_key(available_languages, query)
+                if res is None:
+                    return await utils.answer(m, self.strings("no_lang"))
+        return await utils.answer(
+            m, f'{self.strings("se-re")}<code>{query}</code> -> <code>{res}</code>'
+        )
 
     async def silentmodecmd(self, message):
         """Use this command to switch between silent/unsilent mode."""
@@ -306,7 +373,8 @@ class GoogleTranslateMod(loader.Module):
 
             alist += (
                 f'<a href="tg://openmessage?{type_}_id={i.replace("-100", "")}">id{i.replace("-100", "")}</a>:'
-                f" {st_la} » {fi_la}" + "\n"
+                f" {st_la} » {fi_la}"
+                + "\n"
             )
 
         await utils.answer(message, alist)
@@ -366,19 +434,12 @@ class GoogleTranslateMod(loader.Module):
 
         await utils.answer(message, translated)
 
+    @loader.watcher("out", "only_messages", "no_commands", "editable")
     async def watcher(self, message: Message):
-        if (
-            not getattr(message, "raw_text", False)
-            or not message.out
-            or str(utils.get_chat_id(message)) not in self.get("tr_cha").keys()
-            or message.raw_text.split(maxsplit=1)[0].lower() in self.allmodules.commands
-            or (message.text[0] == "/")
-            or (message.text == "")
-        ):
+        if str(utils.get_chat_id(message)) not in self.get("tr_cha").keys():
             return
 
         stla, fila = self.get("tr_cha")[str(utils.get_chat_id(message))].split(";")
-
         tren = deep_translator.GoogleTranslator(stla, fila)
         translated = "".join(
             [
@@ -392,7 +453,8 @@ class GoogleTranslateMod(loader.Module):
                 message.raw_text + "\n\n" + self.strings("tr-ed") + "\n\n" + translated
             )
 
-        try:
-            await utils.answer(message, translated)
-        except:
+        if translated == message.raw_text:
             return
+
+        with contextlib.suppress(Exception):
+            await utils.answer(message, translated)
