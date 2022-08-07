@@ -432,7 +432,7 @@ class GoogleTranslateMod(loader.Module):
                 f" {st_la} » {fi_la}" + "\n"
             )
         if (laco == 'de') and (not self.get('delangdb', False)):
-            alist += '\nDu kannst Deutsche Namen durch <code>.dllap de" installieren.</code>'
+            alist += '\nDu kannst Deutsche Namen durch <code>.dllap de</code> installieren.'
         await utils.answer(message, alist)
 
     async def translatecmd(self, message: Message):
