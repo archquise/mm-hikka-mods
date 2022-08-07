@@ -389,7 +389,7 @@ class GoogleTranslateMod(loader.Module):
 
     async def atlistcmd(self, message: Message):
         """Sends a list of chats, in which autotranslate is turned on."""
-        laco = self._db.get(translations.__name__, "lang", "en")
+        laco = self.strings('tt')
         autotranslate = self.get("tr_cha")
         alist = self.strings("alheader") + "\n"
         avlad = deep_translator.GoogleTranslator().get_supported_languages(as_dict=True)
@@ -406,7 +406,7 @@ class GoogleTranslateMod(loader.Module):
                     .replace("язык", "")
                 )
             elif (laco == 'de') and (self.get('delangdb')):
-                st_la = get_key(avlad, st_la)
+                st_la = get_key(self.get('delangdb'), st_la)
             else:
                 st_la = get_key(avlad, st_la)
             if laco == "ru":
@@ -417,7 +417,7 @@ class GoogleTranslateMod(loader.Module):
                     .replace("язык", "")
                 )
             elif (laco == 'de') and (self.get('delangdb')):
-                fi_la = get_key(avlad, fi_la)
+                fi_la = get_key(self.get('delangdb'), fi_la)
             else:
                 fi_la = get_key(avlad, fi_la)
 
@@ -431,8 +431,8 @@ class GoogleTranslateMod(loader.Module):
                 f'<a href="tg://openmessage?{type_}_id={i.replace("-100", "")}">id{i.replace("-100", "")}</a>:'
                 f" {st_la} » {fi_la}" + "\n"
             )
-        if (laco == 'de') and not (self.get('delangdb', False)):
-            alist += ' Du kannst Deutsche Namen durch ".dllap de" installieren.'
+        if (laco == 'de') and (not self.get('delangdb', False)):
+            alist += '\nDu kannst Deutsche Namen durch <code>.dllap de" installieren.</code>'
         await utils.answer(message, alist)
 
     async def translatecmd(self, message: Message):
