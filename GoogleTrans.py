@@ -492,6 +492,10 @@ class GoogleTranslateMod(loader.Module):
 
     @loader.watcher("out", "only_messages", "no_commands", "editable")
     async def watcher(self, message: Message):
+        if message.text == '':
+            return
+        if message.text[0] == '/':
+            return
         if str(utils.get_chat_id(message)) not in self.get("tr_cha").keys():
             return
 
