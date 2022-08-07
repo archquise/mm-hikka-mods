@@ -1,4 +1,4 @@
-# meta developer: @minimaxno
+# meta developer: @mm_mods
 # meta pic: https://img.icons8.com/color/344/input-latin-letters-emoji.png
 # requires: deep-translator
 # scope: hikka_only
@@ -283,11 +283,11 @@ class GoogleTranslateMod(loader.Module):
         if lang == "":
             return await utils.answer(m, self.strings("args2"))
         if lang not in self.get("addla"):
-            await utils.answer(m, self.strings("nolang"))
+            await utils.answer(m, self.strings("no_lang"))
         try:
             del self._db[self.__class__.__name__][f"{lang}langdb"]
         except Exception as e:
-            return await utils.answer(m, self.strings("nolang"))
+            return await utils.answer(m, self.strings("no_lang"))
         addla = self.get("addla")
         del addla[get_num(addla, lang)]
         addla = self.set("addla", addla)
