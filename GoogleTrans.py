@@ -66,7 +66,7 @@ class GoogleTranslateMod(loader.Module):
             " english language name} returns following language.\n\n In manual [s-t]"
             " being used for unnecessary text block. {s-t} — for necessary."
         ),
-        "tt": "tt",
+        "tt": "en",
         "lapi": (
             "📥 <b>Language names packet for <code>{}</code> succesfully installed!</b>"
         ),
@@ -75,6 +75,49 @@ class GoogleTranslateMod(loader.Module):
         ),
     }
 
+    strings_de = {
+        "name": "Google Translate",
+        "load": "🔄 <b>Übersetze…</b>",
+        "load2": "🔎 <b>Suchen… Bitte warten.</b>",
+        "se-re": "📘 <b>Gefunden:</b>\n",
+        "cll": "🔄 <b>Sprachlist konfiguriere…</b>",
+        "args": "🚫 <b>Kein Antwort, kein Argument…</b>",
+        "args2": "🚫 <b>Kein Argument…</b>",
+        "no_lang": "📕 <b>Ich kenne dieser Sprache nicht!</b>",
+        "setted": "🔤 <b>Deine Muttersprache aktualisiert!</b>",
+        "silent": "🔇 <b>Jetzt zeige ich Übersetzungnachricht nicht!</b>",
+        "unsilent": "🔊 <b>Jetzt zeige ich Übersetzungnachricht!</b>",
+        "mark": "🔇 <b>Jetzt ich zeige »Übersetzt« Merkzeichen nicht!</b>",
+        "unmark": "🔊 <b>Jetzt ich zeige »Übersetzt« Merkzeichen!</b>",
+        "tr-ed": "<b>Übersetzt:</b>",
+        "added": "➕ <b>Chat zum Autoübersetzunglist hinzufügt!</b>",
+        "changed": "〰️ <b>Autoübersetzung Konfiguration geändert!</b>",
+        "deled": "➖ <b>Chat aus Autoübersetzunglist entfernt!</b>",
+        "alheader": "📃 <b>Autoübersetzungchatlist:</b>",
+        "subscribe": "🖋️ <b>Jetzt zeige ich Originaltext bei Autoübersetzung.</b>",
+        "unsubscribe": (
+            "🖋️ <b>Jetzt zeige ich Originaltext bei Autoübersetzung nicht.</b>"
+        ),
+        "onboard-h": (
+            "ℹ️ <b>Syntax-Leitfaden</b>\n\n•  .deflang {zweistellig Sprachcode"
+            "} ersetze dein Muttersprache mit eingegebt.\n• .markmode,"
+            " .subsmode, .silentmode, .atlist kein Argumente benötigt.\n•"
+            " .autotranslate {Ausgang;Ziel} benötigen Argumente in diesem Format."
+            " Wenn Ausgangsprache nicht eigegebt, er wird automatisch erkannt"
+            " jedes Mal. Wenn Zielsprache nicht eingegebt, es word von deiner Muttersprache definiert.\n•"
+            " .translate [({Ausgang;Ziel})] {текст/ответ} haben desselben Sprachdefinierung Regeln."
+            " Du kannst Blok im Klammern nicht eingegeben"
+            " um von autoerkennt Sprache auf"
+            " deiner Muttersprache zu Übersetzen.\n• .searchlang {zweistellig Sprachcode/Sprachname an"
+            " Englisch, Russisch oder anders installierte Sprache gebe dir Sprachname/Sprachcode"
+            ".\n\nIn Leitfaden [etwas] ist unbenötigt Textblok."
+            " {etwas} — benötigt."
+        ),
+        "tt": "de",
+        "lapi": "📥 <b>Sprachesuchpaket für <code>{}</code> Sprache erfolgreich installiert!</b>",
+        "lapd": "📤 <b>Sprachesuchpaket für <code>{}</code> Sprache erfolgreich deinstalliert!</b>",
+    }
+    
     strings_ru = {
         "name": "Google Translate",
         "load": "🔄 <b>Перевожу…</b>",
@@ -113,7 +156,7 @@ class GoogleTranslateMod(loader.Module):
             " коду.\n\nВ руководстве [что-то] обозначает необязательный текстовый блок."
             " {что-то} — обязательный."
         ),
-        "tt": "тф",
+        "tt": "ру",
         "lapi": "📥 <b>Языковой пакет для языка <code>{}</code> успешно установлен!</b>",
         "lapd": "📤 <b>Языковой пакет для языка <code>{}</code> успешно удалён!</b>",
     }
@@ -138,15 +181,6 @@ class GoogleTranslateMod(loader.Module):
 
         if not self.get("addla", False):
             self.set("addla", [])
-
-    async def setdeflangcmd(self, message: Message):
-        """Use language code with this command to switch basic translation language."""
-        lang = utils.get_args_raw(message)
-        if lang not in available_languages.values:
-            await utils.answer(message, self.strings("nolang"))
-        else:
-            self.set("deflang", lang)
-            await utils.answer(message, self.strings("setted"))
 
     async def autotranslatecmd(self, message: Message):
         """Use language code with this command to add this chat to autotranslate list."""
@@ -224,14 +258,18 @@ class GoogleTranslateMod(loader.Module):
 
                 if ru_n[-1] == " ":
                     ru_n = ru_n[:-1]
-                    
-                if ru_n[-1] == " ":
+
+                if ru_n[-1] == "-":
                     ru_n = ru_n[:-1]
-                    
+
                 if ru_n[0] == " ":
                     ru_n = ru_n.replace(" ", "", 1)
                 if ru_n[0] == "-":
                     ru_n = ru_n.replace("-", "", 1)
+                
+                if (lang == 'de') and (ru_n[-1] == 'e'):
+                	ru_n = ru_n[:-1]
+                
                 rld[ru_n.casefold()] = available_languages[z]
             self.set(f"{lang}langdb", rld)
             addla = self.get("addla")
@@ -262,7 +300,7 @@ class GoogleTranslateMod(loader.Module):
             await utils.answer(message, self.strings("setted"))
 
     async def searchlangcmd(self, m: Message):
-        """Searching language by code or name (RU and EN names avaliable; first usage takes some time to configure database)."""
+        """Searching language by code or name (RU and EN names avaliable — if you downloaded others, you may use them; first usage takes some time to configure database)."""
         query = utils.get_args_raw(m)
         if query == "":
             return await utils.answer(m, self.strings("args2"))
@@ -298,8 +336,19 @@ class GoogleTranslateMod(loader.Module):
             try:
                 res = rld[query]
             except Exception:
-                if self.strings("tt") == "тф":
+                if self.strings("tt") == "ру":
                     res = get_key(rld, query)
+                elif self.strings("tt") == "de":
+                    if not self.get("delangdb", False):
+                        try:
+                            res = get_key(available_languages, query) + ' (du kannst Deutsche Namen durch ".dllap de" installieren)'
+                        except:
+                            return await utils.answer(m, self.strings("no_lang")) 
+                    else:
+                        try:
+                            res = get_key(self.get('delangdb'), query)
+                        except:
+                            return await utils.answer(m, self.strings("no_lang"))
                 else:
                     res = get_key(available_languages, query)
                 if res is None:
@@ -373,8 +422,7 @@ class GoogleTranslateMod(loader.Module):
 
             alist += (
                 f'<a href="tg://openmessage?{type_}_id={i.replace("-100", "")}">id{i.replace("-100", "")}</a>:'
-                f" {st_la} » {fi_la}"
-                + "\n"
+                f" {st_la} » {fi_la}" + "\n"
             )
 
         await utils.answer(message, alist)
