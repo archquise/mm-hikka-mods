@@ -284,7 +284,10 @@ class GoogleTranslateMod(loader.Module):
             return await utils.answer(m, self.strings("args2"))
         if lang not in self.get("addla"):
             await utils.answer(m, self.strings("nolang"))
-        del self._db[self.__class__.__name__][f"{lang}langdb"]
+        try:
+            del self._db[self.__class__.__name__][f"{lang}langdb"]
+        except Exception as e:
+            return await utils.answer(m, self.strings("nolang"))
         addla = self.get("addla")
         del addla[get_num(addla, lang)]
         addla = self.set("addla", addla)
@@ -402,6 +405,8 @@ class GoogleTranslateMod(loader.Module):
                     .translate(st_la)
                     .replace("язык", "")
                 )
+            elif (laco == 'de') and (self.get('delangdb')):
+                st_la = get_key(avlad, st_la)
             else:
                 st_la = get_key(avlad, st_la)
             if laco == "ru":
@@ -411,6 +416,8 @@ class GoogleTranslateMod(loader.Module):
                     .translate(fi_la)
                     .replace("язык", "")
                 )
+            elif (laco == 'de') and (self.get('delangdb')):
+                fi_la = get_key(avlad, fi_la)
             else:
                 fi_la = get_key(avlad, fi_la)
 
@@ -424,7 +431,8 @@ class GoogleTranslateMod(loader.Module):
                 f'<a href="tg://openmessage?{type_}_id={i.replace("-100", "")}">id{i.replace("-100", "")}</a>:'
                 f" {st_la} » {fi_la}" + "\n"
             )
-
+        if (laco == 'de') and not (self.get('delangdb', False)):
+            alist += ' Du kannst Deutsche Namen durch ".dllap de" installieren.'
         await utils.answer(message, alist)
 
     async def translatecmd(self, message: Message):
