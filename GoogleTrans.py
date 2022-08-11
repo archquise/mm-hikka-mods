@@ -28,10 +28,10 @@ def get_num(list: list, needle: str) -> int:
 
 @loader.tds
 class GoogleTranslateMod(loader.Module):
-    """Advanced Google Translate module!"""
+    """Guaranteed to be the most advanced and feature-rich message translation module based on Google Translate, with many useful features."""
 
     strings = {
-        "name": "Google Translate",
+        "name": "GoogleTrans",
         "load": "🔄 <b>Translating…</b>",
         "load2": "🔎 <b>Searching… Please, wait.</b>",
         "se-re": "📘 <b>Search result:</b>\n",
@@ -76,7 +76,7 @@ class GoogleTranslateMod(loader.Module):
     }
 
     strings_de = {
-        "name": "Google Translate",
+        "name": "GoogleTrans",
         "load": "🔄 <b>Übersetze…</b>",
         "load2": "🔎 <b>Suchen… Bitte warten.</b>",
         "se-re": "📘 <b>Gefunden:</b>\n",
@@ -114,12 +114,26 @@ class GoogleTranslateMod(loader.Module):
             " {etwas} — benötigt."
         ),
         "tt": "de",
+        "_cls_doc": "Garantiert das fortschrittlichste und funktionsreichste Nachrichtenübersetzungsmodul auf Basis von Google Translate mit vielen nützlichen Funktionen.",
         "lapi": "📥 <b>Sprachesuchpaket für <code>{}</code> Sprache erfolgreich installiert!</b>",
         "lapd": "📤 <b>Sprachesuchpaket für <code>{}</code> Sprache erfolgreich deinstalliert!</b>",
+        '_cmd_doc_autotranslate': 'Aktiviert die automatische Übersetzung in diesem Chat. Lesen Sie die Hilfe von hier aus.',
+        '_cmd_doc_onboardh': 'Syntaxanleitung.',
+        '_cmd_doc_dllap': 'Ermöglicht die Suche in der eingegebenen Sprache, nachdem die Liste erstellt wurde.',
+        '_cmd_doc_dellap': 'Entfernt das Sprachesuchpaket',
+        '_cmd_doc_autotranslate': 'Aktiviert die Autoübersetzung in diesem Chat. Lesen Sie die Hilfe von hier.',
+        '_cmd_doc_atlist': 'Liste der automatisch übersetzten Chats und der dort verwendeten Sprachen',
+        '_cmd_doc_deflang': 'Legt die Muttersprache fest.',
+        '_cmd_doc_searchlang': 'Sucht die Sprache nach dem Namen in einer der eingestellten Sprachen — standardmäßig Englisch und Russisch — oder Sprachcode.',
+        '_cmd_doc_markmode': 'Aktiviert/deaktiviert die Markierung »Übersetzt«',
+        '_cmd_doc_subsmode': 'Aktiviert/deaktiviert die Textspeicherung bei der automatischen Übersetzung',
+        '_cmd_doc_silentmode': 'Aktiviert/deaktiviert die Anzeige der Fangmeldung beim Übersetzen.',
+        '_cmd_doc_translate': 'Wie unerwartet, übersetzt. Verwenden Sie (start;final), um die zu Übersetzung Sprachen festzulegen. Verwenden Sie die Hilfe für weitere Informationen.'
+
     }
     
     strings_ru = {
-        "name": "Google Translate",
+        "name": "GoogleTrans",
         "load": "🔄 <b>Перевожу…</b>",
         "load2": "🔎 <b>Ищу… Ожидайте.</b>",
         "se-re": "📘 <b>Найдено:</b>\n",
@@ -159,6 +173,19 @@ class GoogleTranslateMod(loader.Module):
         "tt": "ру",
         "lapi": "📥 <b>Языковой пакет для языка <code>{}</code> успешно установлен!</b>",
         "lapd": "📤 <b>Языковой пакет для языка <code>{}</code> успешно удалён!</b>",
+        '_cmd_doc_autotranslate': 'Включает автоперевод в данном чате. Дальше — читай справку.',
+        '_cmd_doc_onboardh': 'Справка по синтаксису.',
+        '_cmd_doc_dllap': 'Даёт возможность после построения списка искать на введённом языке.',
+        '_cmd_doc_dellap': 'Удаляет языковой пакет для поиска.',
+        '_cmd_doc_autotranslate': 'Включает автоперевод в данном чате. Дальше — читай справку.',
+        '_cmd_doc_atlist': 'Список чатов с автопереводом и языков, там используемых.',
+        '_cmd_doc_deflang': 'Устанавливает язык по умолчанию.',
+        '_cmd_doc_searchlang': 'Ищет язык по названию на одном из установленных языков — по умолчанию английский и русский.',
+        '_cmd_doc_markmode': 'Включает/выключает пометку «Переведено».',
+        '_cmd_doc_subsmode': 'Включает/выключает сохранение текста при автопереводе.',
+        '_cmd_doc_silentmode': 'Включает/выключает показ сообщения загрузки при переводе.',
+        '_cmd_doc_translate': 'Как неожиданно — переводит. Используй (start;final) чтоб установить языки для перевода. Для дальнейшей информации используй справку.',
+        "_cls_doc": "Гарантированно самый продвинутый и многофункциональный модуль для перевода сообщений, основанный на Google Translate, с множеством полезных функций.",
     }
 
     async def client_ready(self, client, db):
@@ -269,7 +296,6 @@ class GoogleTranslateMod(loader.Module):
                 
                 if (lang == 'de') and (ru_n[-1] == 'e'):
                 	ru_n = ru_n[:-1]
-                
                 rld[ru_n.casefold()] = available_languages[z]
             self.set(f"{lang}langdb", rld)
             addla = self.get("addla")
@@ -508,13 +534,13 @@ class GoogleTranslateMod(loader.Module):
             ]
         )
 
+        if translated == message.raw_text:
+            return
+        
         if self.get("s-script"):
             translated = (
                 message.raw_text + "\n\n" + self.strings("tr-ed") + "\n\n" + translated
             )
-
-        if translated == message.raw_text:
-            return
 
         with contextlib.suppress(Exception):
             await utils.answer(message, translated)
