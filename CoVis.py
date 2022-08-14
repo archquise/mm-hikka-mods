@@ -63,7 +63,9 @@ class CoVisMod(loader.Module):
         .hpic <HEX-color>"""
         text = utils.get_args_raw(message)
         if not text:
-            color = '#'.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
+            color = '#'
+            for i in range(6):
+                color += random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'])
             image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
             draw = ImageDraw.Draw(image)
             draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
@@ -81,7 +83,9 @@ class CoVisMod(loader.Module):
                     await utils.answer(message, self.strings("inargs"))
                     break
         else:
-            color = '#'.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
+            color = '#'
+            for i in range(6):
+                color += random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'])
 
         image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
         draw = ImageDraw.Draw(image)
@@ -193,7 +197,9 @@ class CoVisMod(loader.Module):
         .hdpic <HEX-color>"""
         text = utils.get_args_raw(message)
         if not text:
-            color = '#'.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
+            color = '#'
+            for i in range(6):
+                color += random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'])
             await self.fptb_ready.wait()
             image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
             draw = ImageDraw.Draw(image)
@@ -223,7 +229,9 @@ class CoVisMod(loader.Module):
                     await utils.answer(message, self.strings("inargs"))
                     break
         else:
-            color = '#'.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
+            color = '#'
+            for i in range(6):
+                color += random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'])
         txt = ["\n".join(wrap(line, 20)) for line in utils.get_args_raw(message).split("\n")]
         text = "\n".join(txt)
         await self.fptb_ready.wait()
