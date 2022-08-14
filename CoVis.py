@@ -224,7 +224,7 @@ class CoVisMod(loader.Module):
                     break
         else:
             color = '#'.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
-        txt = ["\n".join(wrap(line, 20)) for line in utils.get_args_raw(m).split("\n")]
+        txt = ["\n".join(wrap(line, 20)) for line in utils.get_args_raw().split("\n")]
         text = "\n".join(txt)
         await self.fptb_ready.wait()
         image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
@@ -285,7 +285,7 @@ class CoVisMod(loader.Module):
             color = f"rgb({color[0]},{color[1]},{color[2]})"
         else:
             color = f"rgb({random.randint(0, 255)},{random.randint(0, 255)},{random.randint(0, 255)})"
-        txt = ["\n".join(wrap(line, 20)) for line in utils.get_args_raw(m).split("\n")]
+        txt = ["\n".join(wrap(line, 20)) for line in utils.get_args_raw(message).split("\n")]
         text = "\n".join(txt)
         image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
         await self.tnrb_ready.wait()
@@ -322,7 +322,7 @@ class CoVisMod(loader.Module):
             await message.delete()
             return await self.client.send_file(message.chat_id, output)
         color = text
-        if color.startswith("(") and color.endswith(")") and color.count(", ") == 2:
+        if color.startswith("(") and color.endswith(")") and color.count(",") == 2:
             color = color.replace("(", "")
             color = color.replace(")", "")
             h, s, b = color.split(", ")
@@ -344,7 +344,7 @@ class CoVisMod(loader.Module):
             color = f"hsv({h},{s}%,{b}%)"
         else:
             color = f"hsv({random.randint(0, 360)},{random.randint(0, 100)}%,{random.randint(0, 100)}%)"
-        txt = ["\n".join(wrap(line, 20)) for line in utils.get_args_raw(m).split("\n")]
+        txt = ["\n".join(wrap(line, 20)) for line in utils.get_args_raw().split("\n")]
         text = "\n".join(txt)
         image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
         draw = ImageDraw.Draw(image)
