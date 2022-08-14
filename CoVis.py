@@ -19,17 +19,14 @@ class CoVisMod(loader.Module):
 
     strings = {
         "name": "CoVis",
-        "noargs": "📪 <b>And where's args?</b>",
         "inargs": "😵 <b>Incorrect args format!</b>",
     }
     strings_ru = {
         "name": "CoVis",
-        "noargs": "📪 <b>Где аргументы?</b>",
         "inargs": "😵 <b>Неверный формат аргумента!</b>",
     }
     strings_de = {
         "name": "CoVis",
-        "noargs": "📪 <b>Wo ist Argumenten?</b>",
         "inargs": "😵 <b>Falsches Argumenten-Format!</b>",
     }
 
@@ -66,8 +63,17 @@ class CoVisMod(loader.Module):
         .hpic <HEX-color>"""
         text = utils.get_args_raw(message)
         if not text:
-            await utils.answer(message, self.strings("noargs"))
-            return
+            color = ''.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
+            image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(image)
+            draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
+
+            output = io.BytesIO()
+            output.name = f"{color}.webp"
+            image.save(output, "WEBP")
+            output.seek(0)
+            await message.delete()
+            return await self.client.send_file(message.chat_id, output)
         color = text
         if color.startswith("#") and len(color) == 7:
             for ch in color.lower()[1:]:
@@ -95,8 +101,17 @@ class CoVisMod(loader.Module):
         .rpic <RGB-color>"""
         text = utils.get_args_raw(message)
         if not text:
-            await utils.answer(message, self.strings("noargs"))
-            return
+            color = f"rgb({random.randint(0, 255)},{random.randint(0, 255)},{random.randint(0, 255)})"
+            image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(image)
+            draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
+
+            output = io.BytesIO()
+            output.name = f"{color}.webp"
+            image.save(output, "WEBP")
+            output.seek(0)
+            await message.delete()
+            return await self.client.send_file(message.chat_id, output)
         color = text
         if color.startswith("(") and color.endswith(")") and color.count(",") == 2:
             color = color.replace("(", "")
@@ -131,8 +146,18 @@ class CoVisMod(loader.Module):
         .spic <HSB-color>"""
         text = utils.get_args_raw(message)
         if not text:
-            await utils.answer(message, self.strings("noargs"))
-            return
+            color = f"hsv({random.randint(0, 360)},{random.randint(0, 100)}%,{random.randint(0, 100)}%)"
+            image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(image)
+            draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
+
+            output = io.BytesIO()
+            output.name = f"{color}.webp"
+            image.save(output, "WEBP")
+            output.seek(0)
+            await message.delete()
+            return await self.client.send_file(message.chat_id, output)
+
         color = text
         if color.startswith("(") and color.endswith(")") and color.count(",") == 2:
             color = color.replace("(", "")
@@ -174,8 +199,29 @@ class CoVisMod(loader.Module):
         .hdpic <HEX-color>"""
         text = utils.get_args_raw(message)
         if not text:
-            await utils.answer(message, self.strings("noargs"))
-            return
+            color = ''.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
+            await self.fptb_ready.wait()
+            image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(image)
+            draw.rounded_rectangle(
+                (0, 0, 512, 512), 50, outline="#000000", fill=color, width=8
+            )
+            draw.text(
+                (256, 256),
+                text=color,
+                anchor="mm",
+                font=self.fptb,
+                fill="#FFFFFF",
+                align="center",
+                stroke_width=8,
+                stroke_fill="#000000",
+            )
+            output = io.BytesIO()
+            output.name = f"{color}.webp"
+            image.save(output, "WEBP")
+            output.seek(0)
+            await message.delete()
+            return await self.client.send_file(message.chat_id, output)
         color = text
         if color.startswith("#") and len(color) == 7:
             for ch in color.lower()[1:]:
@@ -183,7 +229,7 @@ class CoVisMod(loader.Module):
                     await utils.answer(message, self.strings("inargs"))
                     break
         else:
-            color = "#FFFFFF"
+            color = ''.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
         txt = ["\n".join(wrap(line, 30)) for line in text.split("\n")]
         text = "\n".join(txt)
         await self.fptb_ready.wait()
@@ -211,16 +257,31 @@ class CoVisMod(loader.Module):
 
     async def rdpiccmd(self, message):
         """Visualise RGB-coded color with color code on it.
-        .rdpic <RGB-color>"""
+        .rdpic (<RGB-color>)"""
         text = utils.get_args_raw(message)
         if not text:
-            await utils.answer(message, self.strings("noargs"))
-            return
+            color = f"rgb({random.randint(0, 255)},{random.randint(0, 255)},{random.randint(0, 255)})"
+            image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
+            await self.tnrb_ready.wait()
+            font = io.BytesIO(self.tnrb)
+            font = ImageFont.truetype(font, 64)
+            draw = ImageDraw.Draw(image)
+            draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
+
+            draw.text((256, 256), text=color, anchor="mm", font=self.tnrb, fill="#FFFFFF", align="center",
+                      stroke_width=8, stroke_fill="#000000")
+
+            output = io.BytesIO()
+            output.name = f"{color}.webp"
+            image.save(output, "WEBP")
+            output.seek(0)
+            await message.delete()
+            return await self.client.send_file(message.chat_id, output)
         color = text
         if color.startswith("(") and color.endswith(")") and color.count(",") == 2:
             color = color.replace("(", "")
             color = color.replace(")", "")
-            r, g, b = color.split(",")
+            r, g, b = color.split(", ")
             if not r.isnumeric() or not g.isnumeric() or not b.isnumeric():
                 await utils.answer(message, self.strings("inargs"))
                 return
@@ -252,16 +313,29 @@ class CoVisMod(loader.Module):
 
     async def sdpiccmd(self, message):
         """Visualise HSB-coded color with color code on it.
-        .sdpic <HSB-color>"""
+        .sdpic (<HSB-color>)"""
         text = utils.get_args_raw(message)
         if not text:
-            await utils.answer(message, self.strings("noargs"))
-            return
+            color = f"hsv({random.randint(0, 360)},{random.randint(0, 100)}%,{random.randint(0, 100)}%)"
+            image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(image)
+            draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
+
+            await self.cpsb_ready.wait()
+            draw.text((256, 256), text=color, anchor="mm", font=self.cpsb, fill="#FFFFFF", align="center",
+                      stroke_width=8, stroke_fill="#000000")
+
+            output = io.BytesIO()
+            output.name = f"{color}.webp"
+            image.save(output, "WEBP")
+            output.seek(0)
+            await message.delete()
+            return await self.client.send_file(message.chat_id, output)
         color = text
         if color.startswith("(") and color.endswith(")") and color.count(",") == 2:
             color = color.replace("(", "")
             color = color.replace(")", "")
-            h, s, b = color.split(",")
+            h, s, b = color.split(", ")
             if not h.isnumeric() or not s.isnumeric() or not b.isnumeric():
                 await utils.answer(message, self.strings("inargs"))
                 return
