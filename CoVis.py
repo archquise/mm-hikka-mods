@@ -63,7 +63,7 @@ class CoVisMod(loader.Module):
         .hpic <HEX-color>"""
         text = utils.get_args_raw(message)
         if not text:
-            color = ''.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
+            color = '#'.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
             image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
             draw = ImageDraw.Draw(image)
             draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
@@ -81,10 +81,8 @@ class CoVisMod(loader.Module):
                     await utils.answer(message, self.strings("inargs"))
                     break
         else:
-            color = ''.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
+            color = '#'.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
 
-        txt = ["\n".join(wrap(line, 30)) for line in text.split("\n")]
-        text = "\n".join(txt)
         image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
         draw = ImageDraw.Draw(image)
         draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
@@ -116,20 +114,18 @@ class CoVisMod(loader.Module):
         if color.startswith("(") and color.endswith(")") and color.count(",") == 2:
             color = color.replace("(", "")
             color = color.replace(")", "")
-            r, g, b = color.split(",")
+            r, g, b = color.split(", ")
             if not r.isnumeric() or not g.isnumeric() or not b.isnumeric():
                 await utils.answer(message, self.strings("inargs"))
                 return
             color = eval(f"[{int(r)}, {int(g)}, {int(b)}]")
-            for i in range(2):
+            for i in range(3):
                 if color[i] > 255 or color[i] < 0:
                     await utils.answer(message, self.strings("inargs"))
                     break
             color = f"rgb({color[0]},{color[1]},{color[2]})"
         else:
             color = f"rgb({random.randint(0, 255)},{random.randint(0, 255)},{random.randint(0, 255)})"
-        txt = ["\n".join(wrap(line, 30)) for line in text.split("\n")]
-        text = "\n".join(txt)
         image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
         draw = ImageDraw.Draw(image)
         draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
@@ -159,10 +155,10 @@ class CoVisMod(loader.Module):
             return await self.client.send_file(message.chat_id, output)
 
         color = text
-        if color.startswith("(") and color.endswith(")") and color.count(",") == 2:
+        if color.startswith("(") and color.endswith(")") and color.count(", ") == 2:
             color = color.replace("(", "")
             color = color.replace(")", "")
-            h, s, b = color.split(",")
+            h, s, b = color.split(", ")
             if not h.isnumeric() or not s.isnumeric() or not b.isnumeric():
                 await utils.answer(message, self.strings("inargs"))
                 return
@@ -181,8 +177,6 @@ class CoVisMod(loader.Module):
             color = f"hsv({h},{s}%,{b}%)"
         else:
             color = f"hsv({random.randint(0, 360)},{random.randint(0, 100)}%,{random.randint(0, 100)}%)"
-        txt = ["\n".join(wrap(line, 30)) for line in text.split("\n")]
-        text = "\n".join(txt)
         image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
         draw = ImageDraw.Draw(image)
         draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
@@ -199,7 +193,7 @@ class CoVisMod(loader.Module):
         .hdpic <HEX-color>"""
         text = utils.get_args_raw(message)
         if not text:
-            color = ''.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
+            color = '#'.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
             await self.fptb_ready.wait()
             image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
             draw = ImageDraw.Draw(image)
@@ -229,8 +223,8 @@ class CoVisMod(loader.Module):
                     await utils.answer(message, self.strings("inargs"))
                     break
         else:
-            color = ''.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
-        txt = ["\n".join(wrap(line, 30)) for line in text.split("\n")]
+            color = '#'.join(random.choice(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']) for _ in range(6))
+        txt = ["\n".join(wrap(line, 20)) for line in utils.get_args_raw.split("\n")]
         text = "\n".join(txt)
         await self.fptb_ready.wait()
         image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
@@ -240,7 +234,7 @@ class CoVisMod(loader.Module):
         )
         draw.text(
             (256, 256),
-            text=color,
+            text=text,
             anchor="mm",
             font=self.fptb,
             fill="#FFFFFF",
@@ -263,8 +257,6 @@ class CoVisMod(loader.Module):
             color = f"rgb({random.randint(0, 255)},{random.randint(0, 255)},{random.randint(0, 255)})"
             image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
             await self.tnrb_ready.wait()
-            font = io.BytesIO(self.tnrb)
-            font = ImageFont.truetype(font, 64)
             draw = ImageDraw.Draw(image)
             draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
 
@@ -278,7 +270,7 @@ class CoVisMod(loader.Module):
             await message.delete()
             return await self.client.send_file(message.chat_id, output)
         color = text
-        if color.startswith("(") and color.endswith(")") and color.count(",") == 2:
+        if color.startswith("(") and color.endswith(")") and color.count(", ") == 2:
             color = color.replace("(", "")
             color = color.replace(")", "")
             r, g, b = color.split(", ")
@@ -286,23 +278,21 @@ class CoVisMod(loader.Module):
                 await utils.answer(message, self.strings("inargs"))
                 return
             color = eval(f"[{int(r)}, {int(g)}, {int(b)}]")
-            for i in range(2):
+            for i in range(3):
                 if color[i] > 255 or color[i] < 0:
                     await utils.answer(message, self.strings("inargs"))
                     break
             color = f"rgb({color[0]},{color[1]},{color[2]})"
         else:
             color = f"rgb({random.randint(0, 255)},{random.randint(0, 255)},{random.randint(0, 255)})"
-        txt = ["\n".join(wrap(line, 30)) for line in text.split("\n")]
+        txt = ["\n".join(wrap(line, 20)) for line in utils.get_args_raw.split("\n")]
         text = "\n".join(txt)
         image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
         await self.tnrb_ready.wait()
-        font = io.BytesIO(self.tnrb)
-        font = ImageFont.truetype(font, 64)
         draw = ImageDraw.Draw(image)
         draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
 
-        draw.text((256, 256), text=color, anchor="mm", font=self.tnrb, fill="#FFFFFF", align="center", stroke_width=8, stroke_fill="#000000")
+        draw.text((256, 256), text=text, anchor="mm", font=self.tnrb, fill="#FFFFFF", align="center", stroke_width=8, stroke_fill="#000000")
 
         output = io.BytesIO()
         output.name = f"{color}.webp"
@@ -354,14 +344,14 @@ class CoVisMod(loader.Module):
             color = f"hsv({h},{s}%,{b}%)"
         else:
             color = f"hsv({random.randint(0, 360)},{random.randint(0, 100)}%,{random.randint(0, 100)}%)"
-        txt = ["\n".join(wrap(line, 30)) for line in text.split("\n")]
+        txt = ["\n".join(wrap(line, 20)) for line in utils.get_args_raw.split("\n")]
         text = "\n".join(txt)
         image = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
         draw = ImageDraw.Draw(image)
         draw.rounded_rectangle((0, 0, 512, 512), 50, outline="#000000", fill=color, width=8)
 
         await self.cpsb_ready.wait()
-        draw.text((256, 256), text=color, anchor="mm", font=self.cpsb, fill="#FFFFFF", align="center", stroke_width=8, stroke_fill="#000000")
+        draw.text((256, 256), text=text, anchor="mm", font=self.cpsb, fill="#FFFFFF", align="center", stroke_width=8, stroke_fill="#000000")
 
         output = io.BytesIO()
         output.name = f"{color}.webp"
