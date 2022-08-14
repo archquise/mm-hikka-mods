@@ -62,6 +62,7 @@ class CoVisMod(loader.Module):
         """Visualise HEX-coded color.
         .hpic <HEX-color>"""
         text = utils.get_args_raw(message)
+        r = c.get_reply_message(m)
         if not text:
             color = '#'
             for i in range(6):
@@ -75,7 +76,10 @@ class CoVisMod(loader.Module):
             image.save(output, "WEBP")
             output.seek(0)
             await message.delete()
-            return await self.client.send_file(message.chat_id, output)
+            if message.reply_to:
+                return await self.client.send_file(message.chat_id, output, reply_to=message.reply_to_msg_id)
+            else:
+                return await self.client.send_file(message.chat_id, output)
         color = text
         if color.startswith("#") and len(color) == 7:
             for ch in color.lower()[1:]:
@@ -96,7 +100,10 @@ class CoVisMod(loader.Module):
         image.save(output, "WEBP")
         output.seek(0)
         await message.delete()
-        await self.client.send_file(message.chat_id, output)
+        if message.reply_to:
+            return await self.client.send_file(message.chat_id, output, reply_to=message.reply_to_msg_id)
+        else:
+             return await self.client.send_file(message.chat_id, output)
 
     async def rpiccmd(self, message):
         """Visualise RGB-coded color.
@@ -113,7 +120,10 @@ class CoVisMod(loader.Module):
             image.save(output, "WEBP")
             output.seek(0)
             await message.delete()
-            return await self.client.send_file(message.chat_id, output)
+            if message.reply_to:
+                return await self.client.send_file(message.chat_id, output, reply_to=message.reply_to_msg_id)
+            else:
+                return await self.client.send_file(message.chat_id, output)
         color = text
         if color.startswith("(") and color.endswith(")") and color.count(",") == 2:
             color = color.replace("(", "")
@@ -139,7 +149,10 @@ class CoVisMod(loader.Module):
         image.save(output, "WEBP")
         output.seek(0)
         await message.delete()
-        await self.client.send_file(message.chat_id, output)
+        if message.reply_to:
+            return await self.client.send_file(message.chat_id, output, reply_to=message.reply_to_msg_id)
+        else:
+            return await self.client.send_file(message.chat_id, output)
 
     async def spiccmd(self, message):
         """Visualise HSB-coded color.
@@ -156,7 +169,10 @@ class CoVisMod(loader.Module):
             image.save(output, "WEBP")
             output.seek(0)
             await message.delete()
-            return await self.client.send_file(message.chat_id, output)
+            if message.reply_to:
+                return await self.client.send_file(message.chat_id, output, reply_to=message.reply_to_msg_id)
+            else:
+                return await self.client.send_file(message.chat_id, output)
 
         color = text
         if color.startswith("(") and color.endswith(")") and color.count(", ") == 2:
@@ -190,7 +206,10 @@ class CoVisMod(loader.Module):
         image.save(output, "WEBP")
         output.seek(0)
         await message.delete()
-        await self.client.send_file(message.chat_id, output)
+        if message.reply_to:
+            return await self.client.send_file(message.chat_id, output, reply_to=message.reply_to_msg_id)
+        else:
+            return await self.client.send_file(message.chat_id, output)
 
     async def hdpiccmd(self, message):
         """Visualise HEX-coded color with color code on it.
@@ -221,7 +240,10 @@ class CoVisMod(loader.Module):
             image.save(output, "WEBP")
             output.seek(0)
             await message.delete()
-            return await self.client.send_file(message.chat_id, output)
+            if message.reply_to:
+                return await self.client.send_file(message.chat_id, output, reply_to=message.reply_to_msg_id)
+            else:
+                return await self.client.send_file(message.chat_id, output)
         color = text
         if color.startswith("#") and len(color) == 7:
             for ch in color.lower()[1:]:
@@ -255,7 +277,10 @@ class CoVisMod(loader.Module):
         image.save(output, "WEBP")
         output.seek(0)
         await message.delete()
-        await self.client.send_file(message.chat_id, output)
+        if message.reply_to:
+            return await self.client.send_file(message.chat_id, output, reply_to=message.reply_to_msg_id)
+        else:
+            return await self.client.send_file(message.chat_id, output)
 
     async def rdpiccmd(self, message):
         """Visualise RGB-coded color with color code on it.
@@ -276,7 +301,10 @@ class CoVisMod(loader.Module):
             image.save(output, "WEBP")
             output.seek(0)
             await message.delete()
-            return await self.client.send_file(message.chat_id, output)
+            if message.reply_to:
+                return await self.client.send_file(message.chat_id, output, reply_to=message.reply_to_msg_id)
+            else:
+                return await self.client.send_file(message.chat_id, output)
         color = text
         if color.startswith("(") and color.endswith(")") and color.count(", ") == 2:
             color = color.replace("(", "")
@@ -307,7 +335,10 @@ class CoVisMod(loader.Module):
         image.save(output, "WEBP")
         output.seek(0)
         await message.delete()
-        await self.client.send_file(message.chat_id, output)
+        if message.reply_to:
+            return await self.client.send_file(message.chat_id, output, reply_to=message.reply_to_msg_id)
+        else:
+            return await self.client.send_file(message.chat_id, output)
 
     async def sdpiccmd(self, message):
         """Visualise HSB-coded color with color code on it.
@@ -328,7 +359,10 @@ class CoVisMod(loader.Module):
             image.save(output, "WEBP")
             output.seek(0)
             await message.delete()
-            return await self.client.send_file(message.chat_id, output)
+            if message.reply_to:
+                return await self.client.send_file(message.chat_id, output, reply_to=message.reply_to_msg_id)
+            else:
+                return await self.client.send_file(message.chat_id, output)
         color = text
         if color.startswith("(") and color.endswith(")") and color.count(",") == 2:
             color = color.replace("(", "")
@@ -366,4 +400,7 @@ class CoVisMod(loader.Module):
         image.save(output, "WEBP")
         output.seek(0)
         await message.delete()
-        await self.client.send_file(message.chat_id, output)
+        if message.reply_to:
+            return await self.client.send_file(message.chat_id, output, reply_to=message.reply_to_msg_id)
+        else:
+            return await self.client.send_file(message.chat_id, output)
