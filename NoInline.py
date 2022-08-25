@@ -28,7 +28,7 @@ class NoInlineMod(loader.Module):
         "off": "🤖 <b>Now all members can use inline bots.</b>",
         "status-on": "👤❕ <b>Only admins can use inline bots here.</b>",
         "status-off": "🤖❕ <b>All members can use inline bots here.</b>",
-        "rights?!": "😔 <b>I have no rights to manage group settings.</b>"
+        "rights?!": "😔 <b>Error….</b>\nCode: <code>{}</code>"
     }
     
     strings_ru = {
@@ -38,8 +38,8 @@ class NoInlineMod(loader.Module):
         "off": "🤖 <b>Теперь все могут использовать инлайн-ботов.</b>",
         "status-on": "👤❕ <b>Здесь лишь админы могут использовать инлайн-ботов.</b>",
         "status-off": "🤖❕ <b>Здесь все могут использовать инлайн-ботов.</b>",
-        "rights?!": "😔 <b>У меня нет прав на управление настройками.</b>",
-        "_cl_doc": "Управляет и просматривает права использование инлайн-ботов.",
+        "rights?!": "😔 <b>Ошибка…</b>\nКод: <code>{}</code>",
+        "_cls_doc": "Переключает и проверяет права на использование инлайн-ботов.",
         "_cmd_doc_switchib": "Переключает права на использование инлайн-ботов",
         "_cmd_doc_checkib": "Проверяет права на использование инлайн-ботов",
     }
@@ -49,18 +49,18 @@ class NoInlineMod(loader.Module):
         if not isinstance(m.peer_id, PeerChannel):
             return await utils.answer(m, self.strings('group?!'))
         
-        if (await m.client.get_permissions(utils.get_chat_id(m))).send_inline:
+        if not (await m.client.get_permissions(utils.get_chat_id(m))).send_inline:
             try:
                 await m.client.edit_permissions(utils.get_chat_id(m), send_inline=False)
-            except:
-                return await utils.answer(m, self.strings('rights?!'))
+            except Exception as e:
+                return await utils.answer(m, self.strings('rights?!').format(e))
             return await utils.answer(m, self.strings('on'))
             
         else:
             try:
                 await m.client.edit_permissions(utils.get_chat_id(m), send_inline=True)
-            except:
-                return await utils.answer(m, self.strings('rights?!'))
+            except Exception as e:
+                return await utils.answer(m, self.strings('rights?!').format(e))
             return await utils.answer(m, self.strings('off'))
             
     async def checkibcmd(self, m: Message):
@@ -68,7 +68,7 @@ class NoInlineMod(loader.Module):
         if not isinstance(m.peer_id, PeerChannel):
             return await utils.answer(m, self.strings('group?!'))
         
-        if (await m.client.get_permissions(utils.get_chat_id(m))).send_inline:
+        if not (await m.client.get_permissions(utils.get_chat_id(m))).send_inline:
             return await utils.answer(m, self.strings('status-off'))
         
         else:
