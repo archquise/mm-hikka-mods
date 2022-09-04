@@ -11,9 +11,9 @@
 # meta pic: https://img.icons8.com/emoji/344/mechanical-arm.png
 # meta developer: @mm_mods
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 
-from hikka import loader, utils
+from .. import loader, utils
 from telethon.tl.types import Message, PeerChannel, ChannelParticipantsAdmins
 import logging
 
