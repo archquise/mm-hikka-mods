@@ -11,7 +11,7 @@
 # meta pic: https://img.icons8.com/emoji/344/mechanical-arm.png
 # meta developer: @mm_mods
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 from .. import loader, utils
 from telethon.tl.types import Message, PeerChannel, ChannelParticipantsAdmins
@@ -41,7 +41,7 @@ class RechteMod(loader.Module):
         'stickers-right': 'send stickers',
         'gifs-right': 'send GIFs',
         'games-right': 'send games',
-        'embed-right': 'send embed links',
+        'embed-right': 'send links preview',
         'polls-right': 'send polls',
         'info-right': 'change chat info',
         'invite-right': 'invite users',
@@ -423,16 +423,16 @@ class RechteMod(loader.Module):
         if not isinstance(m.peer_id, PeerChannel):
             return await utils.answer(m, self.strings('group?!'))
 
-        if not (await m.client.get_permissions(utils.get_chat_id(m))).view_participants:
+        if not (await m.client.get_permissions(utils.get_chat_id(m))).change_info:
             try:
-                await m.client.edit_permissions(utils.get_chat_id(m), view_participants=False)
+                await m.client.edit_permissions(utils.get_chat_id(m), change_info=False)
             except Exception as e:
                 return await utils.answer(m, self.strings('rights?!').format(e))
             return await utils.answer(m, self.strings('on').format(self.strings('info-right')))
 
         else:
             try:
-                await m.client.edit_permissions(utils.get_chat_id(m), view_participants=True)
+                await m.client.edit_permissions(utils.get_chat_id(m), check_info=True)
             except Exception as e:
                 return await utils.answer(m, self.strings('rights?!').format(e))
             return await utils.answer(m, self.strings('off').format(self.strings('info-right')))
@@ -442,7 +442,7 @@ class RechteMod(loader.Module):
         if not isinstance(m.peer_id, PeerChannel):
             return await utils.answer(m, self.strings('group?!'))
 
-        if not (await m.client.get_permissions(utils.get_chat_id(m))).view_participants:
+        if not (await m.client.get_permissions(utils.get_chat_id(m))).change_info:
             return await utils.answer(m, self.strings('status-off').format(self.strings('info-right')))
 
         else:
