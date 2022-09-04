@@ -11,7 +11,7 @@
 # meta pic: https://img.icons8.com/emoji/344/mechanical-arm.png
 # meta developer: @mm_mods
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 from hikka import loader, utils
 from telethon.tl.types import Message, PeerChannel, ChannelParticipantsAdmins
@@ -569,7 +569,7 @@ class RechteMod(loader.Module):
         async for user in m.client.iter_participants(utils.get_chat_id(m), filter=ChannelParticipantsAdmins):
             listr += f"\n<b>{user.first_name} {user.last_name if user.last_name is not None else ''} ({user.id})</b>\n"
             if (await m.client.get_permissions(utils.get_chat_id(m), user.id)).is_creator == True:
-                listr += + self.strings('is-creator') + '\n'
+                listr += self.strings('is-creator') + '\n'
             if (await m.client.get_permissions(utils.get_chat_id(m), user.id)).add_admins == True:
                 listr += '<i>' + self.strings('addadmin-right').capitalize() + '</i>: ✅\n'
             else:
