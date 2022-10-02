@@ -14,7 +14,7 @@
 __version__ = "1.0.0"
 
 import asyncio
-from hikka import loader, utils
+from .. import loader, utils
 import telethon as tt
 from telethon.tl.types import Message
 import logging
