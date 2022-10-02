@@ -8,7 +8,7 @@
 #
 # (c) 2022 — licensed under Apache 2.0 — https://www.apache.org/licenses/LICENSE-2.0
 
-# meta pic: https://img.icons8.com/emoji/344/mechanical-arm.png
+# meta pic: https://img.icons8.com/stickers/344/sticker.png
 # meta developer: @mm_mods
 
 __version__ = "1.0.0"
