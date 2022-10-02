@@ -39,6 +39,7 @@ class HolidaysMod(loader.Module):
         'name': 'Holidays',
         'base': '<b>Праздники сегодня:</b>',
         '_cls_doc': 'Показывает праздники сегодня',
+        '_cmd_doc_hollist': 'Показывает список праздников',
         'lang': 'ru',
     }
 
@@ -46,6 +47,7 @@ class HolidaysMod(loader.Module):
         'name': 'Holidays',
         'base': '<b>Feste heute:</b>',
         '_cls_doc': 'Zeigt Feste heute',
+        '_cmd_doc_hollist': 'Zeigt eine Liste von Feste',
         'lang': 'de',
     }
 
@@ -53,6 +55,7 @@ class HolidaysMod(loader.Module):
         'name': 'Holidays',
         'base': '<b>Святкові дні сьогодні:</b>',
         '_cls_doc': 'Показує святкові дні сьогодні',
+        '_cmd_doc_hollist': 'Показує список святкових днів',
         'lang': 'uk',
     }
 
@@ -60,6 +63,7 @@ class HolidaysMod(loader.Module):
         'name': 'Holidays',
         'base': '<b>Bugun kunlar:</b>',
         '_cls_doc': 'Bugun kunlarini ko\'rsatadi',
+        '_cmd_doc_hollist': 'Bugun kunlar ro\'yxatini ko\'rsatadi',
         'lang': 'uz',
     }
 
@@ -90,8 +94,8 @@ class HolidaysMod(loader.Module):
         }
 
         holidays = requests.get('https://kakoysegodnyaprazdnik.ru/', cookies=cookies, headers=headers).content
-        holidays = await utils.run_sync(bs4.BeautifulSoup, holidays.decode('utf-8', 'ignore'), 'html.parser')
+        holidays = bs4.BeautifulSoup(holidays.decode('utf-8', 'ignore'), 'html.parser')
         holidays = holidays.find_all('span', itemprop='text', limit=20)
-        hollist = [re.sub(r'\s\([a-zA-Zа-яА-Я0-9ЁёЬьЪъ\-,.:;\s]*\)', '', i.text) for i in holidays]
+        hollist = [i.text for i in holidays]
         res = deep_translator.GoogleTranslator(source='auto', target=self.strings['lang']).translate_batch(hollist) if self.strings['lang'] != 'ru' else hollist
         await utils.answer(m, f'{self.strings("base")}\n\n' + '\n'.join(res))
