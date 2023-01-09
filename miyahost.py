@@ -95,7 +95,7 @@ class MiyaHostMod(loader.Module):
                 "auth_key",
                 'NULL',
                 lambda: "Basic auth key for miyahost API — get it via @miyahostbot using /hhttpauth",
-                validator=loader.validators.RegExp(r'[a-zA-Z0-9]+|NULL')
+                validator=loader.validators.Hidden(loader.validators.RegExp(r'[a-zA-Z0-9]+|NULL'))
             ),
             loader.ConfigValue(
                 "mock_id",
