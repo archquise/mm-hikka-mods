@@ -11,7 +11,7 @@
 # meta pic: https://img.icons8.com/stickers/344/block.png
 # meta developer: @mm_mods
 
-__version__ = "1.0.0"
+__version__ = "1.2"
 
 import asyncio
 from hikka import loader, utils
@@ -154,14 +154,19 @@ class MiyaHostMod(loader.Module):
         if list(req.keys())[0] == "error":
             req = req["error"]
             if req[0] == 404:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(404, self.strings("err.NoDBRecord")))
             elif req[0] == 401:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(401, self.strings("err.InvalidAuthKey")))
             elif req[0] == 429:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(429, self.strings("err.Verlangsamt").format(req[2])))
             elif req[0] == 403 and "banned" in req[1]:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(403, self.strings("err.Banned")))
             elif req[0] == 403:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(403, self.strings("err.AuthNotEnabled")))
 
         else:
@@ -169,7 +174,7 @@ class MiyaHostMod(loader.Module):
             return await utils.answer(m, self.strings("success").format(emoji, self.strings("state.started"), user))
 
     async def mhstopcmd(self, m: Message):
-        """Start miyahost container."""
+        """Stop miyahost container."""
         user = m.from_id
         mock = False
         if self.config["auth_key"] == 'NULL':
@@ -193,15 +198,20 @@ class MiyaHostMod(loader.Module):
         if list(req.keys())[0] == "error":
             req = req["error"]
             if req[0] == 404:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(404, self.strings("err.NoDBRecord")))
             elif req[0] == 401:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(401, self.strings("err.InvalidAuthKey")))
             elif req[0] == 429:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(429, self.strings("err.Verlangsamt").format(
                     req[2])))
             elif req[0] == 403 and "banned" in req[1]:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(403, self.strings("err.Banned")))
             elif req[0] == 403:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(403, self.strings("err.AuthNotEnabled")))
 
         else:
@@ -232,15 +242,20 @@ class MiyaHostMod(loader.Module):
         if list(req.keys())[0] == "error":
             req = req["error"]
             if req[0] == 404:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(404, self.strings("err.NoDBRecord")))
             elif req[0] == 401:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(401, self.strings("err.InvalidAuthKey")))
             elif req[0] == 429:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(429, self.strings("err.Verlangsamt").format(
                     req[2])))
             elif req[0] == 403 and "banned" in req[1]:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(403, self.strings("err.Banned")))
             elif req[0] == 403:
+                logging.error(f'Failed with request to http://129.151.220.181:41154/mhapi/controls/start/{user}?basic_key={self.config["auth_key"]}, got {req[0]}')
                 return await utils.answer(m, self.strings("error").format(403, self.strings("err.AuthNotEnabled")))
 
         else:
