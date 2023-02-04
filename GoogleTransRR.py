@@ -1,13 +1,30 @@
 # meta developer: @mm_mods
 # meta pic: https://img.icons8.com/color/344/input-latin-letters-emoji.png
-# requires: deep-translator
 
 
 import contextlib
 import logging
-from deep_translator import GoogleTranslator
 from telethon.tl.types import Message
 from .. import loader, utils, translations
+import requests
+
+
+class GoogleTranslator:
+    def __init__(self, start_lang: str = "auto", dest_lang: str = "en"):
+        self.start_lang = start_lang
+        self.dest_lang = dest_lang
+
+    def get_supported_languages(self, as_dict: bool = False) -> list | dict:
+        """Returns a list of supported languages or a dictionary of supported languages with their codes."""
+        as_dict = 'true' if as_dict else 'false'
+        return requests.get(f'https://li23q1.deta.dev/supported?asd={as_dict}').json()['res']
+
+    def translate(self, text: str) -> str:
+        """Translates the text into the specified language."""
+        return requests.post('https://li23q1.deta.dev/translate/', json={'from_lang': self.start_lang,
+                                                                        'to_lang': self.dest_lang,
+                                                                        'text': text}).json()['result']
+
 
 translator = GoogleTranslator()
 available_languages = translator.get_supported_languages(as_dict=True)
@@ -27,9 +44,9 @@ def get_num(lst: list, needle: str) -> int:
 @loader.tds
 class GoogleTranslateMod(loader.Module):
     """Guaranteed to be the most advanced and feature-rich message translation module based on Google Translate,
-    with many useful features."""
+    with many useful features. RR-version (Requirements Reduced)."""
     strings = {
-        "name": "GoogleTrans",
+        "name": "GoogleTrans (RR)",
         "load": "🔄 <b>Translating…</b>",
         "load2": "🔎 <b>Searching… Please, wait.</b>",
         "se-re": "📘 <b>Search result:</b>\n",
@@ -74,7 +91,7 @@ class GoogleTranslateMod(loader.Module):
     }
 
     strings_de = {
-        "name": "GoogleTrans",
+        "name": "GoogleTrans (RR)",
         "load": "🔄 <b>Übersetze…</b>",
         "load2": "🔎 <b>Suchen… Bitte warten.</b>",
         "se-re": "📘 <b>Gefunden:</b>\n",
@@ -113,7 +130,7 @@ class GoogleTranslateMod(loader.Module):
         ),
         "tt": "de",
         "_cls_doc": "Garantiert das fortschrittlichste und funktionsreichste Nachrichtenübersetzungsmodul auf Basis von"
-                    " Google Translate mit vielen nützlichen Funktionen.",
+                    " Google Translate mit vielen nützlichen Funktionen. RR-Version (kein Abhängigkeiten).",
         "lapi": "📥 <b>Sprachesuchpaket für <code>{}</code> Sprache erfolgreich installiert!</b>",
         "lapd": "📤 <b>Sprachesuchpaket für <code>{}</code> Sprache erfolgreich deinstalliert!</b>",
         '_cmd_doc_onboardh': 'Syntaxanleitung.',
@@ -131,9 +148,9 @@ class GoogleTranslateMod(loader.Module):
                               'festzulegen. Verwenden Sie die Hilfe für weitere Informationen.'
 
     }
-    
+
     strings_ru = {
-        "name": "GoogleTrans",
+        "name": "GoogleTrans (RR)",
         "load": "🔄 <b>Перевожу…</b>",
         "load2": "🔎 <b>Ищу… Ожидайте.</b>",
         "se-re": "📘 <b>Найдено:</b>\n",
@@ -187,7 +204,7 @@ class GoogleTranslateMod(loader.Module):
         '_cmd_doc_translate': 'Как неожиданно — переводит. Используй (start;final) чтоб установить языки для перевода. '
                               'Для дальнейшей информации используй справку.',
         "_cls_doc": "Гарантированно самый продвинутый и многофункциональный модуль для перевода сообщений, основанный "
-                    "на Google Translate, с множеством полезных функций.",
+                    "на Google Translate, с множеством полезных функций. RR-версия (без зависимостей).",
     }
 
     async def client_ready(self, client, db):
@@ -296,9 +313,9 @@ class GoogleTranslateMod(loader.Module):
                     ru_n = ru_n.replace(" ", "", 1)
                 if ru_n[0] == "-":
                     ru_n = ru_n.replace("-", "", 1)
-                
+
                 if (lang == 'de') and (ru_n[-1] == 'e'):
-                	ru_n = ru_n[:-1]
+                    ru_n = ru_n[:-1]
                 rld[ru_n.casefold()] = available_languages[z]
             self.set(f"{lang}langdb", rld)
             addla = self.get("addla")
@@ -373,9 +390,10 @@ class GoogleTranslateMod(loader.Module):
                 elif self.strings("tt") == "de":
                     if not self.get("delangdb", False):
                         try:
-                            res = get_key(available_languages, query) + ' (du kannst Deutsche Namen durch ".dllap de" installieren)'
+                            res = get_key(available_languages,
+                                          query) + ' (du kannst Deutsche Namen durch ".dllap de" installieren)'
                         except:
-                            return await utils.answer(m, self.strings("no_lang")) 
+                            return await utils.answer(m, self.strings("no_lang"))
                     else:
                         try:
                             res = get_key(self.get('delangdb'), query)
@@ -457,8 +475,8 @@ class GoogleTranslateMod(loader.Module):
             )
 
             alist += (
-                f'<a href="tg://openmessage?{type_}_id={i.replace("-100", "")}">id{i.replace("-100", "")}</a>:'
-                f" {st_la} » {fi_la}" + "\n"
+                    f'<a href="tg://openmessage?{type_}_id={i.replace("-100", "")}">id{i.replace("-100", "")}</a>:'
+                    f" {st_la} » {fi_la}" + "\n"
             )
         if (laco == 'de') and (not self.get('delangdb', False)):
             alist += '\nDu kannst Deutsche Namen durch <code>.dllap de</code> installieren.'
@@ -489,9 +507,9 @@ class GoogleTranslateMod(loader.Module):
                     finl = self.get("deflang")
 
                 if (
-                    (stal or finl) not in available_languages.values()
-                    and (stal != "auto")
-                    and (finl not in available_languages.values())
+                        (stal or finl) not in available_languages.values()
+                        and (stal != "auto")
+                        and (finl not in available_languages.values())
                 ):
                     await utils.answer(
                         message,
@@ -542,10 +560,10 @@ class GoogleTranslateMod(loader.Module):
 
         if translated == message.raw_text:
             return
-        
+
         if self.get("s-script"):
             translated = (
-                message.raw_text + "\n\n" + self.strings("tr-ed") + "\n\n" + translated
+                    message.raw_text + "\n\n" + self.strings("tr-ed") + "\n\n" + translated
             )
 
         with contextlib.suppress(Exception):
