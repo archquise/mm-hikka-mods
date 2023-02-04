@@ -70,32 +70,9 @@ class HolidaysMod(loader.Module):
 
     async def hollistcmd(self, m: Message):
         """Shows holiday list."""
-        cookies = {
-            '_ym_uid': '16634998731060557833',
-            '_ym_d': '1663499873',
-            'PHPSESSID': 'f6ot9sp2eur79p06hrvvbu7ap6',
-            '_ym_isad': '1',
-        }
-
-        headers = {
-            'authority': 'kakoysegodnyaprazdnik.ru',
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'accept-language': 'de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7,ru;q=0.6',
-            'referer': 'https://www.google.com/',
-            'sec-ch-ua': '"Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'sec-fetch-dest': 'document',
-            'sec-fetch-mode': 'navigate',
-            'sec-fetch-site': 'cross-site',
-            'sec-fetch-user': '?1',
-            'upgrade-insecure-requests': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
-        }
-
-        holidays = requests.get('https://kakoysegodnyaprazdnik.ru/', cookies=cookies, headers=headers).content
-        holidays = bs4.BeautifulSoup(holidays.decode('utf-8', 'ignore'), 'html.parser')
-        holidays = holidays.find_all('span', itemprop='text', limit=20)
-        hollist = [i.text for i in holidays]
+        hollist = requests.get('https://tzj9cc.deta.dev/mirror/holidays/').json()['res']
         res = deep_translator.GoogleTranslator(source='auto', target=self.strings['lang']).translate_batch(hollist) if self.strings['lang'] != 'ru' else hollist
-        await utils.answer(m, f'{self.strings("base")}\n\n' + '\n'.join(res))
+        text = f'{self.strings["base"]}\n'
+        for i in res:
+            text += f'• {i}
+        await utils.answer(m, text)
