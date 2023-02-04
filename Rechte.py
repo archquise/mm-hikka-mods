@@ -6,7 +6,7 @@
 # M  `YM'   MM    M  `YM'   MM       M  `YM'   MM YA.   ,A9 `Mb    MM  L.   I8 
 # .JML. `'  .JMML..JML. `'  .JMML.   .JML. `'  .JMML.`Ybmd9'   `Wbmd"MML.M9mmmP'
 #
-# (c) 2022 — licensed under Apache 2.0 — https://www.apache.org/licenses/LICENSE-2.0
+# (c) 2023 — licensed under Apache 2.0 — https://www.apache.org/licenses/LICENSE-2.0
 
 # meta pic: https://img.icons8.com/emoji/344/mechanical-arm.png
 # meta developer: @mm_mods
