@@ -32,7 +32,7 @@ class YandexTranslator:
         """Translates the text into the specified language."""
         return requests.post('https://tzj9cc.deta.dev/post/ytranslate/translate', json={'from_lang': self.start_lang,
                                                                         'to_lang': self.dest_lang,
-                                                                        'text': text}).json()['result']
+                                                                        'text': text}).json()['res']
 
 
 translator = YandexTranslator()
