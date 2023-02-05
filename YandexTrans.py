@@ -216,7 +216,7 @@ class YaTranslateMod(loader.Module):
                     "на Yandex Translate, с множеством полезных функций. (переписанный GoogleTrans) RR-версия (без зависимостей).",
     }
 
-    async def yclient_ready(self, client, db):
+    async def client_ready(self, client, db):
         self._client = client
         self._db = db
         if not self.get("deflang", False):
