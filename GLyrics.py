@@ -72,7 +72,7 @@ class GLyricsMod(loader.Module):
 
         try:
             data = {'name': song}
-            r = requests.post(f"https://tzj9cc.deta.dev/mirror/genius/lyrics", json=data)
+            r = requests.post(f"https://somekindofapp-1-j3340894.deta.app/mirror/genius/lyrics", json=data)
             r = r.json()
             lyrics = r["res"]["lyrics"]
             title = r["res"]["name"]

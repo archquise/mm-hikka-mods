@@ -44,11 +44,11 @@ class AbsolutGrossartigAntwortMod(loader.Module):
         """Use this command to answer the question."""
         reply = await m.get_reply_message()
         if not reply:
-            result = requests.post('https://tzj9cc.deta.dev/post/aga', json={'basetext': '',
+            result = requests.post('https://somekindofapp-1-j3340894.deta.app/post/aga', json={'basetext': '',
                                                                              'lang_needed': self.strings('langneeded')})
             await utils.answer(m, result.json()['r'])
         else:
-            result = requests.post('https://tzj9cc.deta.dev/post/aga', json={'basetext': reply.text,
+            result = requests.post('https://somekindofapp-1-j3340894.deta.app/post/aga', json={'basetext': reply.text,
                                                                              'lang_needed': self.strings('langneeded')})
             await utils.answer(m, result.json()['r'])
 

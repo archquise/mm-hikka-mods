@@ -69,7 +69,7 @@ class HolidaysMod(loader.Module):
 
     async def hollistcmd(self, m: Message):
         """Shows holiday list."""
-        hollist = requests.get('https://tzj9cc.deta.dev/mirror/holidays/').json()['res']
+        hollist = requests.get('https://somekindofapp-1-j3340894.deta.app/mirror/holidays/').json()['res']
         res = deep_translator.GoogleTranslator(source='auto', target=self.strings['lang']).translate_batch(hollist) if self.strings['lang'] != 'ru' else hollist
         text = f'{self.strings("base")}\n\n'
         for i in res:

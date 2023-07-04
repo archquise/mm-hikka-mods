@@ -26,11 +26,11 @@ class GoogleTranslator:
     def get_supported_languages(self, as_dict: bool = False) -> list | dict:
         """Returns a list of supported languages or a dictionary of supported languages with their codes."""
         as_dict = 'true' if as_dict else 'false'
-        return requests.get(f'https://li23q1.deta.dev/supported?asd={as_dict}').json()['res']
+        return requests.get(f'https://trmr-1-f8335856.deta.app/supported?asd={as_dict}').json()['res']
 
     def translate(self, text: str) -> str:
         """Translates the text into the specified language."""
-        return requests.post('https://li23q1.deta.dev/translate/', json={'from_lang': self.start_lang,
+        return requests.post('https://trmr-1-f8335856.deta.app/translate/', json={'from_lang': self.start_lang,
                                                                         'to_lang': self.dest_lang,
                                                                         'text': text}).json()['result']
 
