@@ -26,11 +26,11 @@ class YandexTranslator:
     def get_supported_languages(self, as_dict: bool = False) -> list | dict:
         """Returns a list of supported languages or a dictionary of supported languages with their codes."""
         as_dict = 'true' if as_dict else 'false'
-        return requests.get(f'https://tzj9cc.deta.dev/get/ytranslate/supported?asd={as_dict}').json()['res']
+        return requests.get(f'https://somekindofapp-1-j3340894.deta.app/get/ytranslate/supported?asd={as_dict}').json()['res']
 
     def translate(self, text: str) -> str:
         """Translates the text into the specified language."""
-        return requests.post('https://tzj9cc.deta.dev/post/ytranslate/translate', json={'from_lang': self.start_lang,
+        return requests.post('https://somekindofapp-1-j3340894.deta.app/post/ytranslate/translate', json={'from_lang': self.start_lang,
                                                                         'to_lang': self.dest_lang,
                                                                         'text': text}).json()['res']
 
