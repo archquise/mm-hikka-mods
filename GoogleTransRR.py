@@ -13,9 +13,12 @@
 
 import contextlib
 import logging
-from telethon.tl.types import Message
-from .. import loader, utils, translations
 import requests
+
+from telethon.tl.types import Message
+from copy import deepcopy
+
+from .. import loader, translations, utils
 
 
 class GoogleTranslator:
@@ -53,9 +56,10 @@ def get_num(lst: list, needle: str) -> int:
 @loader.tds
 class GoogleTranslateMod(loader.Module):
     """Guaranteed to be the most advanced and feature-rich message translation module based on Google Translate,
-    with many useful features. RR-version (Requirements Reduced)."""
+    with many useful features."""
+
     strings = {
-        "name": "GoogleTrans (RR)",
+        "name": "GoogleTrans",
         "load": "🔄 <b>Translating…</b>",
         "load2": "🔎 <b>Searching… Please, wait.</b>",
         "se-re": "📘 <b>Search result:</b>\n",
@@ -100,7 +104,7 @@ class GoogleTranslateMod(loader.Module):
     }
 
     strings_de = {
-        "name": "GoogleTrans (RR)",
+        "name": "GoogleTrans",
         "load": "🔄 <b>Übersetze…</b>",
         "load2": "🔎 <b>Suchen… Bitte warten.</b>",
         "se-re": "📘 <b>Gefunden:</b>\n",
@@ -123,43 +127,68 @@ class GoogleTranslateMod(loader.Module):
             "🖋️ <b>Jetzt zeige ich Originaltext bei Autoübersetzung nicht.</b>"
         ),
         "onboard-h": (
-            "ℹ️ <b>Syntax-Leitfaden</b>\n\n•  .deflang {zweistellig Sprachcode"
-            "} ersetze dein Muttersprache mit eingegebt.\n• .markmode,"
-            " .subsmode, .silentmode, .atlist kein Argumente benötigt.\n•"
-            " .autotranslate {Ausgang;Ziel} benötigen Argumente in diesem Format."
-            " Wenn Ausgangsprache nicht eigegebt, er wird automatisch erkannt"
-            " jedes Mal. Wenn Zielsprache nicht eingegebt, es word von deiner Muttersprache definiert.\n•"
-            " .translate [({Ausgang;Ziel})] {текст/ответ} haben desselben Sprachdefinierung Regeln."
-            " Du kannst Blok im Klammern nicht eingegeben"
-            " um von autoerkennt Sprache auf"
-            " deiner Muttersprache zu Übersetzen.\n• .searchlang {zweistellig Sprachcode/Sprachname an"
-            " Englisch, Russisch oder anders installierte Sprache gebe dir Sprachname/Sprachcode"
-            ".\n\nIn Leitfaden [etwas] ist unbenötigt Textblok."
-            " {etwas} — benötigt."
+            "ℹ️ <b>Syntax-Leitfaden</b>\n\n•  .deflang {zweistellig Sprachcode} ersetze"
+            " dein Muttersprache mit eingegebt.\n• .markmode, .subsmode, .silentmode,"
+            " .atlist kein Argumente benötigt.\n• .autotranslate {Ausgang;Ziel}"
+            " benötigen Argumente in diesem Format. Wenn Ausgangsprache nicht eigegebt,"
+            " er wird automatisch erkannt jedes Mal. Wenn Zielsprache nicht eingegebt,"
+            " es word von deiner Muttersprache definiert.\n• .translate"
+            " [({Ausgang;Ziel})] {текст/ответ} haben desselben Sprachdefinierung"
+            " Regeln. Du kannst Blok im Klammern nicht eingegeben um von autoerkennt"
+            " Sprache auf deiner Muttersprache zu Übersetzen.\n• .searchlang"
+            " {zweistellig Sprachcode/Sprachname an Englisch, Russisch oder anders"
+            " installierte Sprache gebe dir Sprachname/Sprachcode.\n\nIn Leitfaden"
+            " [etwas] ist unbenötigt Textblok. {etwas} — benötigt."
         ),
         "tt": "de",
-        "_cls_doc": "Garantiert das fortschrittlichste und funktionsreichste Nachrichtenübersetzungsmodul auf Basis von"
-                    " Google Translate mit vielen nützlichen Funktionen. RR-Version (kein Abhängigkeiten).",
-        "lapi": "📥 <b>Sprachesuchpaket für <code>{}</code> Sprache erfolgreich installiert!</b>",
-        "lapd": "📤 <b>Sprachesuchpaket für <code>{}</code> Sprache erfolgreich deinstalliert!</b>",
-        '_cmd_doc_onboardh': 'Syntaxanleitung.',
-        '_cmd_doc_dllap': 'Ermöglicht die Suche in der eingegebenen Sprache, nachdem die Liste erstellt wurde.',
-        '_cmd_doc_dellap': 'Entfernt das Sprachesuchpaket',
-        '_cmd_doc_autotranslate': 'Aktiviert die Autoübersetzung in diesem Chat. Lesen Sie die Hilfe von hier.',
-        '_cmd_doc_atlist': 'Liste der automatisch übersetzten Chats und der dort verwendeten Sprachen',
-        '_cmd_doc_deflang': 'Legt die Muttersprache fest.',
-        '_cmd_doc_searchlang': 'Sucht die Sprache nach dem Namen in einer der eingestellten Sprachen — standardmäßig '
-                               'Englisch und Russisch — oder Sprachcode.',
-        '_cmd_doc_markmode': 'Aktiviert/deaktiviert die Markierung »Übersetzt«',
-        '_cmd_doc_subsmode': 'Aktiviert/deaktiviert die Textspeicherung bei der automatischen Übersetzung',
-        '_cmd_doc_silentmode': 'Aktiviert/deaktiviert die Anzeige der Fangmeldung beim Übersetzen.',
-        '_cmd_doc_translate': 'Wie unerwartet, übersetzt. Verwenden Sie (start;final), um die zu Übersetzung Sprachen '
-                              'festzulegen. Verwenden Sie die Hilfe für weitere Informationen.'
-
+        "_cls_doc": (
+            "Garantiert das fortschrittlichste und funktionsreichste"
+            " Nachrichtenübersetzungsmodul auf Basis von Google Translate mit vielen"
+            " nützlichen Funktionen."
+        ),
+        "lapi": (
+            "📥 <b>Sprachesuchpaket für <code>{}</code> Sprache erfolgreich"
+            " installiert!</b>"
+        ),
+        "lapd": (
+            "📤 <b>Sprachesuchpaket für <code>{}</code> Sprache erfolgreich"
+            " deinstalliert!</b>"
+        ),
+        "_cmd_doc_onboardh": "Syntaxanleitung.",
+        "_cmd_doc_dllap": (
+            "Ermöglicht die Suche in der eingegebenen Sprache, nachdem die Liste"
+            " erstellt wurde."
+        ),
+        "_cmd_doc_dellap": "Entfernt das Sprachesuchpaket",
+        "_cmd_doc_autotranslate": (
+            "Aktiviert die Autoübersetzung in diesem Chat. Lesen Sie die Hilfe von"
+            " hier."
+        ),
+        "_cmd_doc_atlist": (
+            "Liste der automatisch übersetzten Chats und der dort verwendeten Sprachen"
+        ),
+        "_cmd_doc_deflang": "Legt die Muttersprache fest.",
+        "_cmd_doc_searchlang": (
+            "Sucht die Sprache nach dem Namen in einer der eingestellten Sprachen —"
+            " standardmäßig Englisch und Russisch — oder Sprachcode."
+        ),
+        "_cmd_doc_markmode": "Aktiviert/deaktiviert die Markierung »Übersetzt«",
+        "_cmd_doc_subsmode": (
+            "Aktiviert/deaktiviert die Textspeicherung bei der automatischen"
+            " Übersetzung"
+        ),
+        "_cmd_doc_silentmode": (
+            "Aktiviert/deaktiviert die Anzeige der Fangmeldung beim Übersetzen."
+        ),
+        "_cmd_doc_translate": (
+            "Wie unerwartet, übersetzt. Verwenden Sie (start;final), um die zu"
+            " Übersetzung Sprachen festzulegen. Verwenden Sie die Hilfe für weitere"
+            " Informationen."
+        ),
     }
 
     strings_ru = {
-        "name": "GoogleTrans (RR)",
+        "name": "GoogleTrans",
         "load": "🔄 <b>Перевожу…</b>",
         "load2": "🔎 <b>Ищу… Ожидайте.</b>",
         "se-re": "📘 <b>Найдено:</b>\n",
@@ -199,21 +228,33 @@ class GoogleTranslateMod(loader.Module):
         "tt": "ру",
         "lapi": "📥 <b>Языковой пакет для языка <code>{}</code> успешно установлен!</b>",
         "lapd": "📤 <b>Языковой пакет для языка <code>{}</code> успешно удалён!</b>",
-        '_cmd_doc_onboardh': 'Справка по синтаксису.',
-        '_cmd_doc_dllap': 'Даёт возможность после построения списка искать на введённом языке.',
-        '_cmd_doc_dellap': 'Удаляет языковой пакет для поиска.',
-        '_cmd_doc_autotranslate': 'Включает автоперевод в данном чате. Дальше — читай справку.',
-        '_cmd_doc_atlist': 'Список чатов с автопереводом и языков, там используемых.',
-        '_cmd_doc_deflang': 'Устанавливает язык по умолчанию.',
-        '_cmd_doc_searchlang': 'Ищет язык по названию на одном из установленных языков — по умолчанию '
-                               'английский и русский.',
-        '_cmd_doc_markmode': 'Включает/выключает пометку «Переведено».',
-        '_cmd_doc_subsmode': 'Включает/выключает сохранение текста при автопереводе.',
-        '_cmd_doc_silentmode': 'Включает/выключает показ сообщения загрузки при переводе.',
-        '_cmd_doc_translate': 'Как неожиданно — переводит. Используй (start;final) чтоб установить языки для перевода. '
-                              'Для дальнейшей информации используй справку.',
-        "_cls_doc": "Гарантированно самый продвинутый и многофункциональный модуль для перевода сообщений, основанный "
-                    "на Google Translate, с множеством полезных функций. RR-версия (без зависимостей).",
+        "_cmd_doc_onboardh": "Справка по синтаксису.",
+        "_cmd_doc_dllap": (
+            "Даёт возможность после построения списка искать на введённом языке."
+        ),
+        "_cmd_doc_dellap": "Удаляет языковой пакет для поиска.",
+        "_cmd_doc_autotranslate": (
+            "Включает автоперевод в данном чате. Дальше — читай справку."
+        ),
+        "_cmd_doc_atlist": "Список чатов с автопереводом и языков, там используемых.",
+        "_cmd_doc_deflang": "Устанавливает язык по умолчанию.",
+        "_cmd_doc_searchlang": (
+            "Ищет язык по названию на одном из установленных языков — по умолчанию "
+            "английский и русский."
+        ),
+        "_cmd_doc_markmode": "Включает/выключает пометку «Переведено».",
+        "_cmd_doc_subsmode": "Включает/выключает сохранение текста при автопереводе.",
+        "_cmd_doc_silentmode": (
+            "Включает/выключает показ сообщения загрузки при переводе."
+        ),
+        "_cmd_doc_translate": (
+            "Как неожиданно — переводит. Используй (start;final) чтоб установить языки"
+            " для перевода. Для дальнейшей информации используй справку."
+        ),
+        "_cls_doc": (
+            "Гарантированно самый продвинутый и многофункциональный модуль для перевода"
+            " сообщений, основанный на Google Translate, с множеством полезных функций."
+        ),
     }
 
     async def client_ready(self, client, db):
@@ -268,7 +309,8 @@ class GoogleTranslateMod(loader.Module):
             return
 
         lang = f"{stla};{fila}"
-        tr_cha = tco = self.get("tr_cha")
+        tr_cha = self.get("tr_cha")
+        tco = deepcopy(tr_cha)
         tr_cha.update({str(utils.get_chat_id(message)): lang})
         self.set("tr_cha", tr_cha)
         if str(utils.get_chat_id(message)) not in tco.keys():
@@ -290,18 +332,10 @@ class GoogleTranslateMod(loader.Module):
         if not self.get(f"{lang}langdb", False):
             await utils.answer(m, self.strings("cll"))
             rld = {}
-            langword = (
-                GoogleTranslator("en", lang)
-                .translate("a language")
-                .casefold()
-            )
+            langword = GoogleTranslator("en", lang).translate("a language").casefold()
 
             if " " in langword:
-                langword = (
-                    GoogleTranslator("en", lang)
-                    .translate("language")
-                    .casefold()
-                )
+                langword = GoogleTranslator("en", lang).translate("language").casefold()
 
             for z in available_languages:
                 ru_n = f"{z} language"
@@ -323,7 +357,7 @@ class GoogleTranslateMod(loader.Module):
                 if ru_n[0] == "-":
                     ru_n = ru_n.replace("-", "", 1)
 
-                if (lang == 'de') and (ru_n[-1] == 'e'):
+                if (lang == "de") and (ru_n[-1] == "e"):
                     ru_n = ru_n[:-1]
                 rld[ru_n.casefold()] = available_languages[z]
             self.set(f"{lang}langdb", rld)
@@ -382,8 +416,10 @@ class GoogleTranslateMod(loader.Module):
                 res = self.get(f'{self.get("addla")[x]}langdb')[query]
                 return await utils.answer(
                     m,
-                    f'{self.strings("se-re")}<code>{query}</code> ->'
-                    f" <code>{res}</code>",
+                    (
+                        f'{self.strings("se-re")}<code>{query}</code> ->'
+                        f" <code>{res}</code>"
+                    ),
                 )
 
             except Exception:
@@ -399,13 +435,16 @@ class GoogleTranslateMod(loader.Module):
                 elif self.strings("tt") == "de":
                     if not self.get("delangdb", False):
                         try:
-                            res = get_key(available_languages,
-                                          query) + ' (du kannst Deutsche Namen durch ".dllap de" installieren)'
+                            res = (
+                                get_key(available_languages, query)
+                                + ' (du kannst Deutsche Namen durch ".dllap de"'
+                                " installieren)"
+                            )
                         except:
                             return await utils.answer(m, self.strings("no_lang"))
                     else:
                         try:
-                            res = get_key(self.get('delangdb'), query)
+                            res = get_key(self.get("delangdb"), query)
                         except:
                             return await utils.answer(m, self.strings("no_lang"))
                 else:
@@ -445,7 +484,7 @@ class GoogleTranslateMod(loader.Module):
 
     async def atlistcmd(self, message: Message):
         """Sends a list of chats, in which autotranslate is turned on."""
-        laco = self.strings('tt')
+        laco = self.strings("tt")
         autotranslate = self.get("tr_cha")
         alist = self.strings("alheader") + "\n"
         avlad = GoogleTranslator().get_supported_languages(as_dict=True)
@@ -457,23 +496,19 @@ class GoogleTranslateMod(loader.Module):
             elif laco == "ru":
                 st_la = f"{get_key(avlad, st_la)} language"
                 st_la = (
-                    GoogleTranslator("en", "ru")
-                    .translate(st_la)
-                    .replace("язык", "")
+                    GoogleTranslator("en", "ru").translate(st_la).replace("язык", "")
                 )
-            elif (laco == 'de') and (self.get('delangdb')):
-                st_la = get_key(self.get('delangdb'), st_la)
+            elif (laco == "de") and (self.get("delangdb")):
+                st_la = get_key(self.get("delangdb"), st_la)
             else:
                 st_la = get_key(avlad, st_la)
             if laco == "ru":
                 fi_la = f"{get_key(avlad, fi_la)} language"
                 fi_la = (
-                    GoogleTranslator("en", "ru")
-                    .translate(fi_la)
-                    .replace("язык", "")
+                    GoogleTranslator("en", "ru").translate(fi_la).replace("язык", "")
                 )
-            elif (laco == 'de') and (self.get('delangdb')):
-                fi_la = get_key(self.get('delangdb'), fi_la)
+            elif (laco == "de") and (self.get("delangdb")):
+                fi_la = get_key(self.get("delangdb"), fi_la)
             else:
                 fi_la = get_key(avlad, fi_la)
 
@@ -484,18 +519,22 @@ class GoogleTranslateMod(loader.Module):
             )
 
             alist += (
-                    f'<a href="tg://openmessage?{type_}_id={i.replace("-100", "")}">id{i.replace("-100", "")}</a>:'
-                    f" {st_la} » {fi_la}" + "\n"
+                f'<a href="tg://openmessage?{type_}_id={i.replace("-100", "")}">id{i.replace("-100", "")}</a>:'
+                f" {st_la} » {fi_la}"
+                + "\n"
             )
-        if (laco == 'de') and (not self.get('delangdb', False)):
-            alist += '\nDu kannst Deutsche Namen durch <code>.dllap de</code> installieren.'
+        if (laco == "de") and (not self.get("delangdb", False)):
+            alist += (
+                "\nDu kannst Deutsche Namen durch <code>.dllap de</code> installieren."
+            )
         await utils.answer(message, alist)
 
     async def translatecmd(self, message: Message):
         """In fact, it translates. Use (start;final) to mark the start and end language of the translation.
         Leave the start language blank to define it automatically."""
         reply = await message.get_reply_message()
-        prompt = utils.get_args_raw(message)
+        prompt = message.text.split(' ', 1)[1]
+
         if not prompt and reply is None:
             await utils.answer(message, self.strings("args"))
 
@@ -516,9 +555,9 @@ class GoogleTranslateMod(loader.Module):
                     finl = self.get("deflang")
 
                 if (
-                        (stal or finl) not in available_languages.values()
-                        and (stal != "auto")
-                        and (finl not in available_languages.values())
+                    (stal or finl) not in available_languages.values()
+                    and (stal != "auto")
+                    and (finl not in available_languages.values())
                 ):
                     await utils.answer(
                         message,
@@ -537,7 +576,7 @@ class GoogleTranslateMod(loader.Module):
                 await utils.answer(message, self.strings("args"))
                 return
             else:
-                prompt = reply.raw_text
+                prompt = reply.text
 
         translator = GoogleTranslator(stal, finl)
         translated = translator.translate(prompt)
@@ -553,7 +592,7 @@ class GoogleTranslateMod(loader.Module):
             return
         if not message.out:
             return
-        if message.text[0] in ['/', pr]:
+        if message.text[0] in ["/", pr]:
             return
         if str(utils.get_chat_id(message)) not in self.get("tr_cha").keys():
             return
@@ -563,16 +602,16 @@ class GoogleTranslateMod(loader.Module):
         translated = "".join(
             [
                 await utils.run_sync(lambda: tren.translate(chunk))
-                for chunk in utils.chunks(message.raw_text, 512)
+                for chunk in utils.chunks(message.text, 512)
             ]
         )
 
-        if translated == message.raw_text:
+        if translated == message.text:
             return
 
         if self.get("s-script"):
             translated = (
-                    message.raw_text + "\n\n" + self.strings("tr-ed") + "\n\n" + translated
+                message.text + "\n\n" + self.strings("tr-ed") + "\n\n" + translated
             )
 
         with contextlib.suppress(Exception):
