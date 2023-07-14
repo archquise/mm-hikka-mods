@@ -533,7 +533,7 @@ class GoogleTranslateMod(loader.Module):
         """In fact, it translates. Use (start;final) to mark the start and end language of the translation.
         Leave the start language blank to define it automatically."""
         reply = await message.get_reply_message()
-        prompt = message.text.split(' ', 1)[1]
+        prompt = ' '.join(utils.get_args(message))
 
         if not prompt and reply is None:
             await utils.answer(message, self.strings("args"))
