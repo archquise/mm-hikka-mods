@@ -213,7 +213,7 @@ class ASAPMod(loader.Module):
             'interval': interval,
             'address': address,
             'paused': False,
-            'next_execution': (datetime.now() + self.convert_time('interval')).strftime('%d.%m.%Y %H:%M:%S'),
+            'next_execution': (datetime.now() + self.convert_time(interval)).strftime('%d.%m.%Y %H:%M:%S'),
         }
 
         tasks = self.get('tasks')
